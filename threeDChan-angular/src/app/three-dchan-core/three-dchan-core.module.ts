@@ -6,7 +6,9 @@ import { MapMakerComponent } from './views/map-maker/map-maker.component';
   imports: [
     CommonModule
   ],
-  declarations: [MapMakerComponent],
+  declarations: [
+    MapMakerComponent,
+  ],
   exports: [MapMakerComponent]
 })
 export class ThreeDchanCoreModule { }
