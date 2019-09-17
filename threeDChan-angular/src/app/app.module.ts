@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 
 import { AppComponent } from './app.component';
+import { ThreeDchanCoreModule } from './three-dchan-core/three-dchan-core.module';
 
 
 @NgModule({
@@ -10,7 +11,8 @@ import { AppComponent } from './app.component';
     AppComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    ThreeDchanCoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]
