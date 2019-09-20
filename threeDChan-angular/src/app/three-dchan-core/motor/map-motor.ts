@@ -65,13 +65,30 @@ export class MapMotor {
           this.camera.attachControl(this.canvas, true);
   
           // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-          var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);
-  
+          this.hLight = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);
           // Default intensity is 1. Let's dim the light a small amount
-          light.intensity = 0.7;
+          this.hLight.intensity = 0.7;
   
           // Our built-in 'sphere' shape.
           var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2, segments: 32}, this.scene);
+
+          var pointerDragBehaviorX = new BABYLON.PointerDragBehavior({dragPlaneNormal: new BABYLON.Vector3(0,1,0)});
+          pointerDragBehaviorX.useObjectOrienationForDragging = false;
+
+          // Listen to drag events
+          pointerDragBehaviorX.onDragStartObservable.add((event)=>{
+              console.log("dragStart");
+              console.log(event);
+          })
+          pointerDragBehaviorX.onDragObservable.add((event)=>{
+              console.log("drag");
+              console.log(event);
+          })
+          pointerDragBehaviorX.onDragEndObservable.add((event)=>{
+              console.log("dragEnd");
+              console.log(event);
+          })
+          sphere.addBehavior(pointerDragBehaviorX);
   
           // Move the sphere upward 1/2 its height
           sphere.position.y = 1;
