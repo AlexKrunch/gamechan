@@ -18,13 +18,13 @@ export class MapMotor {
     //Singleton data
     private static instance: MapMotor;
     public canvas: HTMLCanvasElement;
-    public engine: Engine;
-    public scene: Scene;
-    public camera: FreeCamera;
+    public engine: BABYLON.Engine;
+    public scene: BABYLON.Scene;
+    public camera: BABYLON.FreeCamera;
 
     //scene elements
     private dLight: DirectionalLight;
-    private hLight: HemisphericLight;
+    private hLight: BABYLON.HemisphericLight;
     private pLight: PointLight;
     public shadowGen: ShadowGenerator;
     private ground: Mesh;
@@ -34,7 +34,7 @@ export class MapMotor {
         //Set the instance
         MapMotor.instance = this;
         this.canvas = <HTMLCanvasElement> document.getElementById(canvasElement);
-        this.engine = new Engine(this.canvas, true, null, false);
+        this.engine = new BABYLON.Engine(this.canvas, true, null, false);
         // Listen for browser/canvas resize events
         window.addEventListener("resize", ()=> {
           this.engine.resize();
@@ -55,8 +55,31 @@ export class MapMotor {
 
         console.log("createScene()");
         // We need a scene to create all our geometry and babylonjs items in
-        this.scene = new Scene(this.engine);
-        new FreeCamera('FlyCamera', new Vector3(0, 5,-10), this.scene);
+        this.scene = new BABYLON.Scene(this.engine);
+        this.camera = new BABYLON.FreeCamera("fly_cam", new BABYLON.Vector3(0, 5, -10), this.scene);
+
+          // This targets the camera to scene origin
+          this.camera.setTarget(BABYLON.Vector3.Zero());
+
+          // This attaches the camera to the canvas
+          this.camera.attachControl(this.canvas, true);
+  
+          // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+          var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);
+  
+          // Default intensity is 1. Let's dim the light a small amount
+          light.intensity = 0.7;
+  
+          // Our built-in 'sphere' shape.
+          var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2, segments: 32}, this.scene);
+  
+          // Move the sphere upward 1/2 its height
+          sphere.position.y = 1;
+  
+          // Our built-in 'ground' shape.
+          var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 6, height: 6}, this.scene);
+
+
         this.initAtmosphere();
         this.initOptimisation();
          
@@ -73,17 +96,16 @@ export class MapMotor {
         //Scene atmoshpere
         this.scene.clearColor = new Color4(226/255, 244/255, 1);
         this.scene.ambientColor = new Color3(0.3, 0.3, 0.3);
-    
         this.scene.autoClear = false; // Color buffer
         this.scene.autoClearDepthAndStencil = false;
-    
-    
+
+
+        /*
         // Hemispheric light to enlight the scene
-        this.hLight = new HemisphericLight("hemi", new Vector3(0, 0.5, 0), this.scene);
+        this.hLight = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 0.5, 0), this.scene);
         this.hLight.intensity = 0.85;
     
         //texture
-        /*
         this.ground = Mesh.CreateGround("ground", 1000, 1000, 2, this.scene);
         this.ground.checkCollisions = true;
         this.ground.position.y = - 0.1;
