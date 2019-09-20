@@ -13,10 +13,10 @@ import {
     GradientMaterial
 }from 'babylonjs-materials'
 
-export class MapMotor {
+export class MapMakerMotor {
 
     //Singleton data
-    private static instance: MapMotor;
+    private static instance: MapMakerMotor;
     public canvas: HTMLCanvasElement;
     public engine: BABYLON.Engine;
     public scene: BABYLON.Scene;
@@ -32,7 +32,7 @@ export class MapMotor {
     constructor(canvasElement : string) {
 
         //Set the instance
-        MapMotor.instance = this;
+        MapMakerMotor.instance = this;
         this.canvas = <HTMLCanvasElement> document.getElementById(canvasElement);
         this.engine = new BABYLON.Engine(this.canvas, true, null, false);
         // Listen for browser/canvas resize events

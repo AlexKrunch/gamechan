@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MapMotor } from '../../motor/map-motor';
+import { MapMakerMotor } from '../../motor/map-maker-motor';
 
 
 //https://phaser.io/tutorials/how-to-use-phaser-with-typescript
@@ -20,7 +20,7 @@ export class MapMakerComponent implements OnInit {
   ngOnInit() {
 
     //creating game
-    this.mapMotor = new MapMotor('renderCanvas');
+    this.mapMotor = new MapMakerMotor('renderCanvas');
     this.mapMotor. initGame();
 
   }
