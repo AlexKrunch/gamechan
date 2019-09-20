@@ -109,12 +109,12 @@ export class MapMakerMotor {
       ***********************/
     
       initAtmosphere(){
+
     
         //Scene atmoshpere
         this.scene.clearColor = new Color4(226/255, 244/255, 1);
-        this.scene.ambientColor = new Color3(0.3, 0.3, 0.3);
-        this.scene.autoClear = false; // Color buffer
-        this.scene.autoClearDepthAndStencil = false;
+        //this.scene.autoClear = false; // Color buffer
+        //this.scene.autoClearDepthAndStencil = false;
 
 
         /*

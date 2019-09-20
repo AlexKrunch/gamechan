@@ -10,5 +10,6 @@ export default class BlockMesh {
         this.blockModel = blockModel_;
         this.scene = scene_;
 
+        //Make the mesh
     }
 }
