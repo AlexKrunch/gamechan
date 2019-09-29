@@ -23,6 +23,11 @@ export default class MapEditor {
     }
 
     //create block
+    public addBlock(){
+
+        let block = new BlockMesh(null, this.scene);
+
+    }
 
     //create entity
 

@@ -21,8 +21,14 @@ export class MapMakerComponent implements OnInit {
 
     //creating game
     this.mapMotor = new MapMakerMotor('renderCanvas');
-    this.mapMotor. initGame();
+    this.mapMotor.initGame();
 
+  }
+
+  /* Interactions */
+  addMesh(){
+    console.log("addMesh()");
+    this.mapMotor.addMesh();
   }
 
 }

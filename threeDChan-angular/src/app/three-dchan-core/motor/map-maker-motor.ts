@@ -12,6 +12,7 @@ import * as GUI from 'babylonjs-gui';
 import {
     GradientMaterial
 }from 'babylonjs-materials'
+import MapEditor from './map-editor';
 
 export class MapMakerMotor {
 
@@ -28,6 +29,9 @@ export class MapMakerMotor {
     private pLight: PointLight;
     public shadowGen: ShadowGenerator;
     private ground: Mesh;
+
+    //Other
+    private mapEditor: MapEditor;
 
     constructor(canvasElement : string) {
 
@@ -48,6 +52,8 @@ export class MapMakerMotor {
       //Launch the game
       this.createScene();
       this.run();
+
+      this.mapEditor = new MapEditor(this.scene);
   
     }
 
@@ -76,6 +82,7 @@ export class MapMakerMotor {
           pointerDragBehaviorX.useObjectOrienationForDragging = false;
 
           // Listen to drag events
+          /*
           pointerDragBehaviorX.onDragStartObservable.add((event)=>{
               console.log("dragStart");
               console.log(event);
@@ -87,7 +94,7 @@ export class MapMakerMotor {
           pointerDragBehaviorX.onDragEndObservable.add((event)=>{
               console.log("dragEnd");
               console.log(event);
-          })
+          })*/
           sphere.addBehavior(pointerDragBehaviorX);
   
           // Move the sphere upward 1/2 its height
@@ -167,6 +174,11 @@ export class MapMakerMotor {
             //SCript to render interactions
           }
         });
+      }
+
+      /* INTERACTIONS */
+      public addMesh(){
+        this.mapEditor.addBlock();
       }
 
 }
