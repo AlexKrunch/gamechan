@@ -31,4 +31,8 @@ export class MapMakerComponent implements OnInit {
     this.mapMotor.addMesh();
   }
 
+  onClickMap(){
+    this.mapMotor.onClick();
+  }
+
 }

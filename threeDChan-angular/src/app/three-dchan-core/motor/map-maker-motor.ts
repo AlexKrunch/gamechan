@@ -54,6 +54,7 @@ export class MapMakerMotor {
       this.run();
 
       this.mapEditor = new MapEditor(this.scene);
+      this.mapEditor.initMap();
   
     }
 
@@ -76,8 +77,7 @@ export class MapMakerMotor {
           this.hLight.intensity = 0.7;
   
           // Our built-in 'sphere' shape.
-          var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2, segments: 32}, this.scene);
-
+          //var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2, segments: 32}, this.scene);
           var pointerDragBehaviorX = new BABYLON.PointerDragBehavior({dragPlaneNormal: new BABYLON.Vector3(0,1,0)});
           pointerDragBehaviorX.useObjectOrienationForDragging = false;
 
@@ -94,14 +94,11 @@ export class MapMakerMotor {
           pointerDragBehaviorX.onDragEndObservable.add((event)=>{
               console.log("dragEnd");
               console.log(event);
-          })*/
+          })
           sphere.addBehavior(pointerDragBehaviorX);
-  
           // Move the sphere upward 1/2 its height
           sphere.position.y = 1;
-  
-          // Our built-in 'ground' shape.
-          var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 6, height: 6}, this.scene);
+          */
 
 
         this.initAtmosphere();
@@ -178,7 +175,11 @@ export class MapMakerMotor {
 
       /* INTERACTIONS */
       public addMesh(){
-        this.mapEditor.addBlock();
+        //this.mapEditor.addBlock();
+      }
+
+      public onClick(){
+        this.mapEditor.onClick();
       }
 
 }
