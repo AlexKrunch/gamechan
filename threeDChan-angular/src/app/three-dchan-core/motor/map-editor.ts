@@ -10,6 +10,7 @@ import {
 import MapModel from '../models/map.model';
 import BlockMesh  from './mesh/block-mesh';
 import { initDomAdapter } from '@angular/platform-browser/src/browser';
+import BlockModel from '../models/block.model';
 
 export default class MapEditor {
 
@@ -29,7 +30,7 @@ export default class MapEditor {
     }
 
     public initMap(){
-        this.ground = BABYLON.MeshBuilder.CreateGround("ground", {width: MapEditor.MAP_SIZE, height: MapEditor.MAP_SIZE}, this.scene);
+        this.ground = BABYLON.MeshBuilder.CreateGround("ground", {width: MapEditor.MAP_SIZE*MapEditor.TILE_SIZE, height: MapEditor.MAP_SIZE*MapEditor.TILE_SIZE}, this.scene);
     }
 
     /********************
@@ -46,9 +47,22 @@ export default class MapEditor {
 
     //create block
     public addBlock(point_ : BABYLON.Vector3){
-        let block = new BlockMesh(null, this.scene);
+
+        let blockModel = new BlockModel();
+        blockModel.size.x = MapEditor.TILE_SIZE;
+        blockModel.size.y = MapEditor.TILE_SIZE;
+        blockModel.size.z = MapEditor.TILE_SIZE;
+        let block = new BlockMesh(blockModel, this.scene);
         let pointRounded = this.magneticRounding(point_);
         block.placeToImpact(pointRounded);
+        
+    }
+
+    //wall
+    public addWall(point_ : BABYLON.Vector3){
+
+
+
     }
 
     //create entity
