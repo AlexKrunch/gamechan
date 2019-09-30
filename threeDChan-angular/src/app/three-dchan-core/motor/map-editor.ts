@@ -47,21 +47,28 @@ export default class MapEditor {
 
     //create block
     public addBlock(point_ : BABYLON.Vector3){
-
+        /*
         let blockModel = new BlockModel();
         blockModel.size.x = MapEditor.TILE_SIZE;
         blockModel.size.y = MapEditor.TILE_SIZE;
         blockModel.size.z = MapEditor.TILE_SIZE;
         let block = new BlockMesh(blockModel, this.scene);
         let pointRounded = this.magneticRounding(point_);
-        block.placeToImpact(pointRounded);
-        
+        block.placeToImpact(pointRounded);*/
+
+        this.addWall(point_ );
     }
 
     //wall
     public addWall(point_ : BABYLON.Vector3){
 
-
+        let blockModel = new BlockModel();
+        blockModel.size.x = MapEditor.TILE_SIZE;
+        blockModel.size.y = MapEditor.TILE_SIZE;
+        blockModel.size.z = MapEditor.TILE_SIZE*0.2;
+        let block = new BlockMesh(blockModel, this.scene);
+        let pointRounded = this.magneticRounding(point_);
+        block.placeToImpact(pointRounded);
 
     }
 
