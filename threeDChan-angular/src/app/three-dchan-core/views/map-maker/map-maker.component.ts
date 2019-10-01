@@ -27,7 +27,7 @@ export class MapMakerComponent implements OnInit {
 
   /* Interactions */
   addMesh(){
-    console.log("addMesh()");
+    //console.log("addMesh()");
     this.mapMotor.addMesh();
   }
 

@@ -19,6 +19,9 @@ export default class MapEditor {
     public blockDict: { [id: string] : BlockMesh; } = {};
     public ground: BABYLON.Mesh;
 
+    //Manage selected mesh
+    public blockSelected : BlockMesh;
+
     //BASE SIZE
     public static get TILE_SIZE():number { return 2; }
     public static get MAP_SIZE():number { return 30; }
@@ -26,6 +29,8 @@ export default class MapEditor {
     constructor(scene_: BABYLON.Scene) {
 
         this.scene = scene_;
+        //init the block dict
+        this.blockDict = {};
         
     }
 
@@ -34,13 +39,41 @@ export default class MapEditor {
     }
 
     /********************
+     * REGISTER OBJECTS
+     ********************/
+
+    registrerBlock(blockMesh_: BlockMesh){
+        this.blockDict[blockMesh_.nameId] = blockMesh_;
+    }
+
+    /********************
      * INTERACTION
      ********************/
+
     public onClick(){
         if(this.scene){
             let pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY);
             if (pickResult.hit) {
-                this.addBlock( pickResult.pickedPoint );
+
+                console.log(pickResult.pickedMesh.name);
+                if( pickResult.pickedMesh.name.indexOf('block') >= 0){
+                    //Block
+                    let block : BlockMesh = this.blockDict[pickResult.pickedMesh.name];
+                    if(block ){
+                        //Unselect last mesh
+                        if( this.blockSelected ){
+                            this.blockSelected.setSelected(false);
+                        }
+
+                        block.setSelected(true);
+                    }
+
+                } else {
+                    //If Ground
+                    this.addBlock( pickResult.pickedPoint );
+                   
+                }
+
             }
         }
     }
@@ -66,7 +99,9 @@ export default class MapEditor {
         blockModel.size.x = MapEditor.TILE_SIZE;
         blockModel.size.y = MapEditor.TILE_SIZE;
         blockModel.size.z = MapEditor.TILE_SIZE*0.2;
-        let block = new BlockMesh(blockModel, this.scene);
+
+        let block = new BlockMesh(blockModel, this.scene, this);
+        block.setSelected(true);
         let pointRounded = this.magneticRounding(point_);
         block.placeToImpact(pointRounded);
 
