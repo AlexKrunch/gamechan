@@ -49,17 +49,19 @@ export default class BlockMesh {
 
     public setSelected(isSelected_: Boolean){
 
-        this.material = new BABYLON.StandardMaterial("material_block_"+this.nameId, this.scene);
+        //https://www.html5gamedevs.com/topic/33483-how-switch-material-by-button-click/
+        this.material = new BABYLON.StandardMaterial("material_block", this.scene);
         
-
         if(isSelected_) {
             console.log("select_block");
             this.material.alpha = 1;
             this.material.diffuseColor = new BABYLON.Color3(1, 0, 1);
+            this.material.wireframe = true;
             //this.mesh.disableEdgesRendering();
         } else {
             console.log("deselect block !!!");
             this.material.diffuseColor = new BABYLON.Color3(0, 1, 1);
+            this.material.wireframe = false;
             /*this.material.alpha = 0;
             this.mesh.enableEdgesRendering(1-0.000000000000001);
             this.mesh.edgesWidth = 2.0;
