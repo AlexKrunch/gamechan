@@ -2,10 +2,11 @@
 <canvas (click)="onClickMap()" #renderCanvas id="renderCanvas" touch-action="none" tabindex="1" style="touch-action: none;"></canvas>
 <!--Block editor-->
 <div *ngIf="currentInteraction != null && this.currentInteraction.type === 1" id="blockEditor">
-    name: {{ currentInteraction.value.nameId }}
-    width: {{ currentInteraction.value.size.x }}<br/>
-    height: {{ currentInteraction.value.size.y }}<br/>
-    depth: {{ currentInteraction.value.size.z }}<br/>
+    name: {{ currentInteraction.value.nameId }}<br/>
+    width: <input type="number" [(ngModel)]= "currentInteraction.value.size.x " step="0.1"/><br/>
+    height: <input type="number" [(ngModel)]= "currentInteraction.value.size.y " step="0.1"/><br/>
+    depth:  <input type="number" [(ngModel)]= "currentInteraction.value.size.z " step="0.1"/><br/>
     -----------<br/>
-    rotation: <input type="number" [(ngModel)]= "currentInteraction.value.rotation.y"/> <br/>
+    rotation: <input type="number" [(ngModel)]= "currentInteraction.value.rotation.y" step="5"><br/>
+    <button (click)="saveMeshChange()">Save mesh</button>
 </div>

@@ -44,7 +44,11 @@ export class MapMakerComponent implements OnInit {
   }
 
   onClickMap(){
-    this.mapMotor.onClick();
+    this.mapMotor.mapEditor.onClick();
+  }
+
+  saveMeshChange(){
+    this.mapMotor.mapEditor.editMesh(this.currentInteraction.value);
   }
 
 }

@@ -13,6 +13,7 @@ import { initDomAdapter } from '@angular/platform-browser/src/browser';
 import BlockModel from '../models/block.model';
 import { MapMakerMotor } from './map-maker-motor';
 import InteractionModel from '../models/interaction.model';
+import DataMeshModel from '../models/data-mesh.model';
 
 export default class MapEditor {
 
@@ -99,31 +100,75 @@ export default class MapEditor {
         blockModel.size.y = MapEditor.TILE_SIZE;
         blockModel.size.z = MapEditor.TILE_SIZE*0.2;
 
+        let pointRounded = this.magneticRounding(point_);
+
+        blockModel.position.x = pointRounded.x;
+        blockModel.pointOfImpact = pointRounded.y;
+        blockModel.position.z = pointRounded.z;
+
         let block = new BlockMesh(blockModel, this.scene, this);
         block.setSelected(true);
-        let pointRounded = this.magneticRounding(point_);
-        block.placeToImpact(pointRounded);
+      
+       // block.placeToImpact(pointRounded);
 
         this.selectBlock(block);
     }
 
+    pointerDragBehaviorXZ: BABYLON.PointerDragBehavior;
+
     selectBlock(block_){
-        if(this.blockSelected) this.blockSelected.setSelected(false);
+
+        if(this.blockSelected){
+            this.blockSelected.setSelected(false);
+            if(this.pointerDragBehaviorXZ != null) this.blockSelected.mesh.removeBehavior( this.pointerDragBehaviorXZ );
+        } 
+
+        if(this.pointerDragBehaviorXZ == null){
+            this.pointerDragBehaviorXZ = new BABYLON.PointerDragBehavior({dragPlaneNormal: new BABYLON.Vector3(0,1,0)});
+            this.pointerDragBehaviorXZ.useObjectOrienationForDragging = false;
+    
+            // Listen to drag events
+            /*
+            this.pointerDragBehaviorXZ.onDragStartObservable.add((event)=>{
+                console.log("dragStart");
+                console.log(event);
+            })
+            this.pointerDragBehaviorXZ.onDragObservable.add((event)=>{
+                console.log("drag");
+                console.log(event);
+            })*/
+            this.pointerDragBehaviorXZ.onDragEndObservable.add((event)=>{
+                console.log("dragEnd");
+                //console.log(event);
+                if(this.blockSelected != null) this.blockSelected.updateMeshPosition();
+                let interaction = new InteractionModel();
+                interaction.type = InteractionModel.TYPE_MESH;
+                interaction.value =  this.blockSelected.blockModel;
+                this.motorInstance.gameUiService.sendInteraction(interaction);
+            })
+        }
+
         block_.setSelected(true);
         this.blockSelected = block_;
+        this.blockSelected.mesh.addBehavior( this.pointerDragBehaviorXZ );
 
         let interaction = new InteractionModel();
         interaction.type = InteractionModel.TYPE_MESH;
         interaction.value =  this.blockSelected.blockModel;
         this.motorInstance.gameUiService.sendInteraction(interaction);
+
     }
 
     //create entity
 
     //create character
 
-    //point a stuff, ask what it is?
-    //+select it
+    //Edit mesh
+    public editMesh(meshModel_ : DataMeshModel){
+        console.log(meshModel_);
+        let block : BlockMesh = this.blockDict[meshModel_.nameId];
+        block.editMesh(meshModel_);
+    }
 
     //------
     //Select an object

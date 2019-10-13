@@ -16,17 +16,7 @@ export default class BlockMesh {
         this.blockModel = (blockModel_)? blockModel_ : new BlockModel();
         this.scene = scene_;
         this.blockModel.nameId = 'block_'+uuid.v1();
-
-        //Make the mesh
-        this.mesh = BABYLON.MeshBuilder.CreateBox(
-            this.blockModel.nameId, {
-            width: this.blockModel.size.x,
-            height: this.blockModel.size.y,
-            depth: this.blockModel.size.z,
-            },
-        this.scene);
-        this.mesh.checkCollisions = false;
-
+        this.makeBlockMesh();
         this.setSelected(false);
 
         //Block created
@@ -38,15 +28,15 @@ export default class BlockMesh {
      * Place the block at the point of impact
      * @param point_ 
      */
+    /*
     public placeToImpact(point_: BABYLON.Vector3){
      
         this.mesh.position.x = point_.x;
         this.mesh.position.y = point_.y + this.mesh.scaling.y* 0.5;
         this.mesh.position.z = point_.z;
-
         //console.log(point_);
 
-    }
+    }*/
 
     public setSelected(isSelected_: Boolean){
 
@@ -70,9 +60,43 @@ export default class BlockMesh {
             this.mesh.edgesWidth = 2.0;
             this.mesh.edgesColor = new BABYLON.Color4(0, 0, 1, 1);*/
         }
+      
+    }
 
-      
-        //this.mesh.material = this.material;
-      
+    editMesh(blockModel_: BlockModel){
+        console
+        this.mesh.rotation.y = blockModel_.rotation.y;
+        this.blockModel = blockModel_;
+        this.makeBlockMesh();
+        this.setSelected(true);
+    }
+
+    updateMeshPosition(){
+
+        this.blockModel.position.x = this.mesh.position.x;
+        this.blockModel.position.y = this.mesh.position.y;
+        this.blockModel.position.z = this.mesh.position.z;
+        
+    }
+
+    makeBlockMesh(){
+
+        if( this.mesh )  this.mesh.dispose();
+
+        //Make the mesh
+        this.mesh = BABYLON.MeshBuilder.CreateBox(
+            this.blockModel.nameId, {
+            width: this.blockModel.size.x,
+            height: this.blockModel.size.y,
+            depth: this.blockModel.size.z,
+            },
+        this.scene);
+
+        //Rotation and position
+        this.mesh.rotation.y =  this.blockModel .rotation.y;
+        this.mesh.position.x =  this.blockModel .position.x;
+        this.mesh.position.y =  this.blockModel .pointOfImpact + this.mesh.scaling.y* 0.5;
+        this.mesh.position.z =  this.blockModel .position.z;
+        this.mesh.checkCollisions = false;
     }
 }
