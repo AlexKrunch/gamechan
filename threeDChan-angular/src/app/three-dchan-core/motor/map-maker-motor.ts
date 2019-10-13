@@ -8,6 +8,7 @@ import {
 } from 'babylonjs'
   
 import * as GUI from 'babylonjs-gui';
+import {GameUiService} from '../services/game-ui.service';
   
 import {
     GradientMaterial
@@ -30,6 +31,9 @@ export class MapMakerMotor {
     public shadowGen: ShadowGenerator;
     private ground: Mesh;
 
+    //Services
+    gameUiService : GameUiService;
+
     //Other
     private mapEditor: MapEditor;
 
@@ -46,6 +50,10 @@ export class MapMakerMotor {
         
     }
 
+    initUiService(gameUiService_ : GameUiService){
+      this.gameUiService = gameUiService_;
+    }
+
     initGame() {
 
       console.log( "initGame() ");
@@ -53,7 +61,7 @@ export class MapMakerMotor {
       this.createScene();
       this.run();
 
-      this.mapEditor = new MapEditor(this.scene);
+      this.mapEditor = new MapEditor(this.scene, this);
       this.mapEditor.initMap();
   
     }

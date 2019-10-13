@@ -1,2 +1,11 @@
 <button (click)="addMesh()">Add</button>
 <canvas (click)="onClickMap()" #renderCanvas id="renderCanvas" touch-action="none" tabindex="1" style="touch-action: none;"></canvas>
+<!--Block editor-->
+<div *ngIf="currentInteraction != null && this.currentInteraction.type === 1" id="blockEditor">
+    name: {{ currentInteraction.value.nameId }}
+    width: {{ currentInteraction.value.size.x }}<br/>
+    height: {{ currentInteraction.value.size.y }}<br/>
+    depth: {{ currentInteraction.value.size.z }}<br/>
+    -----------<br/>
+    rotation: <input type="number" [(ngModel)]= "currentInteraction.value.rotation.y"/> <br/>
+</div>

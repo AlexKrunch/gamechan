@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MapMakerMotor } from '../../motor/map-maker-motor';
+import InteractionModel from '../../models/interaction.model';
+import {GameUiService} from '../../services/game-ui.service';
 
 
 //https://phaser.io/tutorials/how-to-use-phaser-with-typescript
@@ -14,14 +16,24 @@ declare const Phaser: any;
 export class MapMakerComponent implements OnInit {
 
   mapMotor : any;
+  currentInteraction: InteractionModel;
 
-  constructor() { }
+  constructor(private gameUIService : GameUiService) { 
+
+  }
 
   ngOnInit() {
 
     //creating game
     this.mapMotor = new MapMakerMotor('renderCanvas');
+    this.mapMotor.initUiService(this.gameUIService);
     this.mapMotor.initGame();
+
+    //listen interactions
+    this.gameUIService.sendInteractionsEmitter.subscribe( (inter_)=> {
+      this.currentInteraction = inter_;
+    });
+
 
   }
 

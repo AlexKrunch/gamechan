@@ -11,10 +11,13 @@ import MapModel from '../models/map.model';
 import BlockMesh  from './mesh/block-mesh';
 import { initDomAdapter } from '@angular/platform-browser/src/browser';
 import BlockModel from '../models/block.model';
+import { MapMakerMotor } from './map-maker-motor';
+import InteractionModel from '../models/interaction.model';
 
 export default class MapEditor {
 
     private scene : BABYLON.Scene;
+    private motorInstance: MapMakerMotor
     //Dictionnary of mesh --> data slot
     public blockDict: { [id: string] : BlockMesh; } = {};
     public ground: BABYLON.Mesh;
@@ -26,8 +29,9 @@ export default class MapEditor {
     public static get TILE_SIZE():number { return 2; }
     public static get MAP_SIZE():number { return 30; }
 
-    constructor(scene_: BABYLON.Scene) {
+    constructor(scene_: BABYLON.Scene, motorInstance_: MapMakerMotor) {
 
+        this.motorInstance = motorInstance_;
         this.scene = scene_;
         //init the block dict
         this.blockDict = {};
@@ -43,7 +47,7 @@ export default class MapEditor {
      ********************/
 
     registrerBlock(blockMesh_: BlockMesh){
-        this.blockDict[blockMesh_.nameId] = blockMesh_;
+        this.blockDict[blockMesh_.blockModel.nameId] = blockMesh_;
     }
 
     /********************
@@ -60,12 +64,7 @@ export default class MapEditor {
                     //Block
                     let block : BlockMesh = this.blockDict[pickResult.pickedMesh.name];
                     if(block ){
-                        //Unselect last mesh
-                        if( this.blockSelected ){
-                            this.blockSelected.setSelected(false);
-                        }
-
-                        block.setSelected(true);
+                        this.selectBlock(block);
                     }
 
                 } else {
@@ -105,6 +104,18 @@ export default class MapEditor {
         let pointRounded = this.magneticRounding(point_);
         block.placeToImpact(pointRounded);
 
+        this.selectBlock(block);
+    }
+
+    selectBlock(block_){
+        if(this.blockSelected) this.blockSelected.setSelected(false);
+        block_.setSelected(true);
+        this.blockSelected = block_;
+
+        let interaction = new InteractionModel();
+        interaction.type = InteractionModel.TYPE_MESH;
+        interaction.value =  this.blockSelected.blockModel;
+        this.motorInstance.gameUiService.sendInteraction(interaction);
     }
 
     //create entity

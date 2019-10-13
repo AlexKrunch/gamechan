@@ -1,6 +1,8 @@
 import BlockModel from "../../models/block.model";
 import MapEditor from "../map-editor";
-const uuidv1 = require('uuid/v1');
+
+//import uuidv1 from 'uuid/v1';
+import * as uuid from 'uuid';
 
 export default class BlockMesh {
 
@@ -9,23 +11,22 @@ export default class BlockMesh {
     mesh: BABYLON.Mesh;
     material : BABYLON.StandardMaterial;
 
-    nameId : string;
-
     constructor(blockModel_: BlockModel, scene_ : BABYLON.Scene, mapEditor_ : MapEditor) {
 
         this.blockModel = (blockModel_)? blockModel_ : new BlockModel();
         this.scene = scene_;
-        this.nameId = 'block_'+uuidv1();
+        this.blockModel.nameId = 'block_'+uuid.v1();
 
         //Make the mesh
         this.mesh = BABYLON.MeshBuilder.CreateBox(
-            this.nameId, {
+            this.blockModel.nameId, {
             width: this.blockModel.size.x,
             height: this.blockModel.size.y,
             depth: this.blockModel.size.z,
             },
         this.scene);
         this.mesh.checkCollisions = false;
+
         this.setSelected(false);
 
         //Block created
@@ -50,25 +51,28 @@ export default class BlockMesh {
     public setSelected(isSelected_: Boolean){
 
         //https://www.html5gamedevs.com/topic/33483-how-switch-material-by-button-click/
-        this.material = new BABYLON.StandardMaterial("material_block", this.scene);
+        if(!this.mesh.material){
+            this.mesh.material = new BABYLON.StandardMaterial("material_block"+uuid.v1(), this.scene);
+        }
         
-        if(isSelected_) {
+        if(!isSelected_) {
             console.log("select_block");
-            this.material.alpha = 1;
-            this.material.diffuseColor = new BABYLON.Color3(1, 0, 1);
-            this.material.wireframe = true;
+            //this.mesh.material.alpha = 1;
+            (this.mesh.material as BABYLON.StandardMaterial).diffuseColor = new BABYLON.Color3(1, 0, 1);
+            this.mesh.material.wireframe = true;
             //this.mesh.disableEdgesRendering();
         } else {
             console.log("deselect block !!!");
-            this.material.diffuseColor = new BABYLON.Color3(0, 1, 1);
-            this.material.wireframe = false;
+            (this.mesh.material as BABYLON.StandardMaterial).diffuseColor = new BABYLON.Color3(0, 1, 1);
+            this.mesh.material.wireframe = false;
             /*this.material.alpha = 0;
             this.mesh.enableEdgesRendering(1-0.000000000000001);
             this.mesh.edgesWidth = 2.0;
             this.mesh.edgesColor = new BABYLON.Color4(0, 0, 1, 1);*/
         }
 
-        this.mesh.material = this.material;
+      
+        //this.mesh.material = this.material;
       
     }
 }

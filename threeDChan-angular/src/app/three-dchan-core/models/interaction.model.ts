@@ -5,5 +5,7 @@ export  default class InteractionModel {
  public type: number;
 
  public static get TYPE_NONE():number { return 0; }
+ public static get TYPE_MESH():number { return 1; }
+ public static get TYPE_EDIT_MESH():number { return 2; }
  
 }
