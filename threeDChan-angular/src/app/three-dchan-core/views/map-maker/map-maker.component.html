@@ -1,4 +1,8 @@
 <button (click)="addMesh()">Add</button>
+<select [ngModel]="currentTool"  (ngModelChange)="changeTool($event)">
+    <option value="0">Select</option>
+    <option value="1">Add mesh</option> 
+</select> {{currentTool}}
 <canvas (click)="onClickMap()" #renderCanvas id="renderCanvas" touch-action="none" tabindex="1" style="touch-action: none;"></canvas>
 <!--Block editor-->
 <div *ngIf="currentInteraction != null && this.currentInteraction.type === 1" id="blockEditor">

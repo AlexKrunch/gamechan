@@ -17,6 +17,7 @@ export class MapMakerComponent implements OnInit {
 
   mapMotor : any;
   currentInteraction: InteractionModel;
+  currentTool: Number = 1; // add block
 
   constructor(private gameUIService : GameUiService) { 
 
@@ -49,6 +50,11 @@ export class MapMakerComponent implements OnInit {
 
   saveMeshChange(){
     this.mapMotor.mapEditor.editMesh(this.currentInteraction.value);
+  }
+
+  changeTool(event_){
+    console.log(event_);
+    this.currentTool = event_;
   }
 
 }
