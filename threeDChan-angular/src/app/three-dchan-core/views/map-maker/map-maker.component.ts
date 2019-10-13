@@ -30,6 +30,8 @@ export class MapMakerComponent implements OnInit {
     this.mapMotor.initUiService(this.gameUIService);
     this.mapMotor.initGame();
 
+    this.mapMotor.mapEditor.setTool(this.currentTool);
+
     //listen interactions
     this.gameUIService.sendInteractionsEmitter.subscribe( (inter_)=> {
       this.currentInteraction = inter_;
@@ -52,9 +54,17 @@ export class MapMakerComponent implements OnInit {
     this.mapMotor.mapEditor.editMesh(this.currentInteraction.value);
   }
 
+  deleteMesh(){
+    this.mapMotor.mapEditor.deleteMesh();
+  }
+
+  cloneMesh(){
+    this.mapMotor.mapEditor.cloneMesh(this.currentInteraction.value);
+  }
+
   changeTool(event_){
-    console.log(event_);
     this.currentTool = event_;
+    this.mapMotor.mapEditor.setTool(this.currentTool );
   }
 
 }

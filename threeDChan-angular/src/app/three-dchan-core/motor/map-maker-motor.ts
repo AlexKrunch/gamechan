@@ -22,7 +22,7 @@ export class MapMakerMotor {
     public canvas: HTMLCanvasElement;
     public engine: BABYLON.Engine;
     public scene: BABYLON.Scene;
-    public camera: BABYLON.FreeCamera;
+    public camera: BABYLON.ArcRotateCamera;
 
     //scene elements
     private dLight: DirectionalLight;
@@ -71,13 +71,19 @@ export class MapMakerMotor {
         console.log("createScene()");
         // We need a scene to create all our geometry and babylonjs items in
         this.scene = new BABYLON.Scene(this.engine);
-        this.camera = new BABYLON.FreeCamera("fly_cam", new BABYLON.Vector3(0, 5, -10), this.scene);
+        //this.camera = new BABYLON.FreeCamera("fly_cam", new BABYLON.Vector3(0, 5, -10), this.scene);
+        this.camera =  new BABYLON.ArcRotateCamera("editor_camera", 0, 0, 10, new BABYLON.Vector3(0, 0, 0), this.scene);
+        this.camera.setPosition(new BABYLON.Vector3(20, 10, -20));
+        this.camera.setTarget(BABYLON.Vector3.Zero());
+
+        // This attaches the camera to the canvas
+        this.camera.attachControl(this.canvas, true);
 
           // This targets the camera to scene origin
-          this.camera.setTarget(BABYLON.Vector3.Zero());
+          //this.camera.setTarget(BABYLON.Vector3.Zero());
 
           // This attaches the camera to the canvas
-          this.camera.attachControl(this.canvas, true);
+          //this.camera.attachControl(this.canvas, true);
   
           // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
           this.hLight = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);

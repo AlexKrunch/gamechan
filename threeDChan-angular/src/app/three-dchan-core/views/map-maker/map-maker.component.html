@@ -1,4 +1,3 @@
-<button (click)="addMesh()">Add</button>
 <select [ngModel]="currentTool"  (ngModelChange)="changeTool($event)">
     <option value="0">Select</option>
     <option value="1">Add mesh</option> 
@@ -11,6 +10,6 @@
     height: <input type="number" [(ngModel)]= "currentInteraction.value.size.y " step="0.1"/><br/>
     depth:  <input type="number" [(ngModel)]= "currentInteraction.value.size.z " step="0.1"/><br/>
     -----------<br/>
-    rotation: <input type="number" [(ngModel)]= "currentInteraction.value.rotation.y" step="5"><br/>
-    <button (click)="saveMeshChange()">Save mesh</button>
+    rotation: <input type="number" [(ngModel)]= "currentInteraction.value.rotation.y" step="0.1" min="0" max="10"><br/>
+    <button (click)="saveMeshChange()">Save mesh</button> <button (click)="deleteMesh()">Delete mesh</button> <button (click)="cloneMesh()">Clone mesh</button>
 </div>

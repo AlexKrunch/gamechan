@@ -25,10 +25,15 @@ export default class MapEditor {
 
     //Manage selected mesh
     public blockSelected : BlockMesh;
+    public currentTool : number;
+    public pointerDragBehaviorXZ: BABYLON.PointerDragBehavior;
 
     //BASE SIZE
     public static get TILE_SIZE():number { return 2; }
     public static get MAP_SIZE():number { return 30; }
+
+    public static get EDITOR_TOOL_SELECT():number { return 0; }
+    public static get EDITOR_TOOL_ADD():number { return 1; }
 
     constructor(scene_: BABYLON.Scene, motorInstance_: MapMakerMotor) {
 
@@ -60,14 +65,15 @@ export default class MapEditor {
             let pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY);
             if (pickResult.hit) {
 
-                console.log(pickResult.pickedMesh.name);
                 if( pickResult.pickedMesh.name.indexOf('block') >= 0){
-                    //Block
-                    let block : BlockMesh = this.blockDict[pickResult.pickedMesh.name];
-                    if(block ){
-                        this.selectBlock(block);
-                    }
 
+                    if( this.currentTool == MapEditor.EDITOR_TOOL_SELECT) {
+                        //Block
+                        let block : BlockMesh = this.blockDict[pickResult.pickedMesh.name];
+                        if( block ){
+                            this.selectBlock(block);
+                        }
+                    }
                 } else {
                     //If Ground
                     this.addBlock( pickResult.pickedPoint );
@@ -78,43 +84,38 @@ export default class MapEditor {
         }
     }
 
+    public setTool(tool_){
+        this.currentTool = tool_;
+    }
+
     //create block
     public addBlock(point_ : BABYLON.Vector3){
-        /*
-        let blockModel = new BlockModel();
-        blockModel.size.x = MapEditor.TILE_SIZE;
-        blockModel.size.y = MapEditor.TILE_SIZE;
-        blockModel.size.z = MapEditor.TILE_SIZE;
-        let block = new BlockMesh(blockModel, this.scene);
-        let pointRounded = this.magneticRounding(point_);
-        block.placeToImpact(pointRounded);*/
-
-        this.addWall(point_ );
+        if( this.currentTool == MapEditor.EDITOR_TOOL_ADD) this.addWall(point_, null );
     }
 
     //wall
-    public addWall(point_ : BABYLON.Vector3){
+    public addWall(point_ : BABYLON.Vector3, blockModel_ : BlockModel){
 
         let blockModel = new BlockModel();
+
         blockModel.size.x = MapEditor.TILE_SIZE;
         blockModel.size.y = MapEditor.TILE_SIZE;
         blockModel.size.z = MapEditor.TILE_SIZE*0.2;
 
-        let pointRounded = this.magneticRounding(point_);
-
-        blockModel.position.x = pointRounded.x;
-        blockModel.pointOfImpact = pointRounded.y;
-        blockModel.position.z = pointRounded.z;
+        if(blockModel_ == null){
+            let pointRounded = this.magneticRounding(point_);
+            blockModel.position.x = pointRounded.x;
+            blockModel.pointOfImpact = pointRounded.y;
+            blockModel.position.z = pointRounded.z;
+        } else {
+            blockModel = blockModel_;
+            blockModel.position.x += MapEditor.TILE_SIZE;
+            blockModel.position.z += MapEditor.TILE_SIZE; 
+        }
 
         let block = new BlockMesh(blockModel, this.scene, this);
-        block.setSelected(true);
-      
-       // block.placeToImpact(pointRounded);
-
         this.selectBlock(block);
     }
-
-    pointerDragBehaviorXZ: BABYLON.PointerDragBehavior;
 
     selectBlock(block_){
 
@@ -128,15 +129,6 @@ export default class MapEditor {
             this.pointerDragBehaviorXZ.useObjectOrienationForDragging = false;
     
             // Listen to drag events
-            /*
-            this.pointerDragBehaviorXZ.onDragStartObservable.add((event)=>{
-                console.log("dragStart");
-                console.log(event);
-            })
-            this.pointerDragBehaviorXZ.onDragObservable.add((event)=>{
-                console.log("drag");
-                console.log(event);
-            })*/
             this.pointerDragBehaviorXZ.onDragEndObservable.add((event)=>{
                 console.log("dragEnd");
                 //console.log(event);
@@ -156,7 +148,6 @@ export default class MapEditor {
         interaction.type = InteractionModel.TYPE_MESH;
         interaction.value =  this.blockSelected.blockModel;
         this.motorInstance.gameUiService.sendInteraction(interaction);
-
     }
 
     //create entity
@@ -165,15 +156,24 @@ export default class MapEditor {
 
     //Edit mesh
     public editMesh(meshModel_ : DataMeshModel){
-        console.log(meshModel_);
         let block : BlockMesh = this.blockDict[meshModel_.nameId];
         block.editMesh(meshModel_);
     }
 
+    //Destroy
+    deleteMesh (){
+        //Desttroy it
+        this.blockSelected.destroy();
+        this.blockDict[ this.blockSelected.blockModel.nameId] = null;
+    }
+
     //------
     //Select an object
-    //Destroy
+ 
     //Duplicate
+    cloneMesh (meshModel_ : DataMeshModel){
+       this.addWall(null, meshModel_);
+    }
     //Modify
 
     /****************

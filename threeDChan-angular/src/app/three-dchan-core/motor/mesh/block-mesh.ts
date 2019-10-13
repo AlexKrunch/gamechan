@@ -99,4 +99,8 @@ export default class BlockMesh {
         this.mesh.position.z =  this.blockModel .position.z;
         this.mesh.checkCollisions = false;
     }
+
+    public destroy(){
+        this.mesh.dispose();
+    }
 }
