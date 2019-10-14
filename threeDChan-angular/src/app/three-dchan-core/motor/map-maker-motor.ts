@@ -9,10 +9,8 @@ import {
   
 import * as GUI from 'babylonjs-gui';
 import {GameUiService} from '../services/game-ui.service';
-  
-import {
-    GradientMaterial
-}from 'babylonjs-materials'
+import {OfflineService} from '../services/offline.service';
+import {GradientMaterial}from 'babylonjs-materials'
 import MapEditor from './map-editor';
 
 export class MapMakerMotor {
@@ -33,6 +31,7 @@ export class MapMakerMotor {
 
     //Services
     gameUiService : GameUiService;
+    offlineService : OfflineService;
 
     //Other
     public mapEditor: MapEditor;
@@ -53,6 +52,12 @@ export class MapMakerMotor {
     initUiService(gameUiService_ : GameUiService){
       this.gameUiService = gameUiService_;
     }
+
+    initOfflineService(offlineService_ : OfflineService){
+      this.offlineService = offlineService_;
+    }
+
+    
 
     initGame() {
 

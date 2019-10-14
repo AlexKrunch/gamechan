@@ -6,6 +6,6 @@ export default class MapModel{
 
     blocks: BlockModel[];
     entities: EntityModel[];
-    chracters: CharacterModel[];
+    characters: CharacterModel[];
 
 }
