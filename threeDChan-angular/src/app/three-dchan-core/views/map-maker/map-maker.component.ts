@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {NgForm} from '@angular/forms';
 import { MapMakerMotor } from '../../motor/map-maker-motor';
 import InteractionModel from '../../models/interaction.model';
 import {GameUiService} from '../../services/game-ui.service';
@@ -18,6 +19,7 @@ export class MapMakerComponent implements OnInit {
   mapMotor : any;
   currentInteraction: InteractionModel;
   currentTool: Number = 1; // add block
+  formChangesSubscription: any;
 
   constructor(private gameUIService : GameUiService) { 
 
@@ -36,8 +38,6 @@ export class MapMakerComponent implements OnInit {
     this.gameUIService.sendInteractionsEmitter.subscribe( (inter_)=> {
       this.currentInteraction = inter_;
     });
-
-
   }
 
   /* Interactions */
@@ -51,6 +51,10 @@ export class MapMakerComponent implements OnInit {
   }
 
   saveMeshChange(){
+    this.mapMotor.mapEditor.editMesh(this.currentInteraction.value);
+  }
+
+  onMeshChange(e_){
     this.mapMotor.mapEditor.editMesh(this.currentInteraction.value);
   }
 
