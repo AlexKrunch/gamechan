@@ -155,7 +155,7 @@ export default class MapEditor {
     //create character
 
     //Edit mesh
-    public editMesh(meshModel_ : DataMeshModel){
+    public editMesh(meshModel_ : BlockModel){
         let block : BlockMesh = this.blockDict[meshModel_.nameId];
         block.editMesh(meshModel_);
     }
@@ -171,7 +171,7 @@ export default class MapEditor {
     //Select an object
  
     //Duplicate
-    cloneMesh (meshModel_ : DataMeshModel){
+    cloneMesh (meshModel_ : BlockModel){
        this.addWall(null, meshModel_);
     }
     //Modify

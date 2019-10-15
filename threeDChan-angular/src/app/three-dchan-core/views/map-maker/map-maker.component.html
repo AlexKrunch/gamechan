@@ -11,5 +11,10 @@
     depth:  <input type="number" [(ngModel)]= "currentInteraction.value.size.z " min="0" step="0.5" (ngModelChange)="onMeshChange($event)"/><br/>
     -----------<br/>
     rotation: <input type="number" [(ngModel)]= "currentInteraction.value.rotation.y" step="0.1" min="-10" max="10" (ngModelChange)="onMeshChange($event)"><br/>
+    -----------<br/>
+    Texture top<select [(ngModel)]= "currentInteraction.value.textureTop">
+        <option value="texture1.png">Texture 1</option>
+        <option value="texture2.png">Texture 2</option> 
+    </select>
     <button (click)="deleteMesh()">Delete mesh</button> <button (click)="cloneMesh()">Clone mesh</button>
 </div>
