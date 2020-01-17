@@ -16,4 +16,4 @@ import {GameUiService} from './services/game-ui.service';
   providers: [GameUiService],
   exports: [MapMakerComponent]
 })
-export class ThreeDchanCoreModule { }
+export class GameChanCoreModule { }
