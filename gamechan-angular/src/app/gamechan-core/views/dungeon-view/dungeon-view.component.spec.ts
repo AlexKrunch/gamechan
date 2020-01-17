@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapMakerComponent } from './map-maker.component';
+import { DungeonViewComponent } from './dungeon-view.component';
 
-describe('MapMakerComponent', () => {
-  let component: MapMakerComponent;
-  let fixture: ComponentFixture<MapMakerComponent>;
+describe('DungeonViewComponent', () => {
+  let component: DungeonViewComponent;
+  let fixture: ComponentFixture<DungeonViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MapMakerComponent ]
+      declarations: [ DungeonViewComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MapMakerComponent);
+    fixture = TestBed.createComponent(DungeonViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
