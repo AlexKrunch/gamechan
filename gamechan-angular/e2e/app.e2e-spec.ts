@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('three-dchan-angular App', () => {
+describe('gamechan-angular App', () => {
   let page: AppPage;
 
   beforeEach(() => {

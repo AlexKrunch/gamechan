@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
-import { ThreeDchanCoreModule } from './three-dchan-core/three-dchan-core.module';
+import { ThreeDchanCoreModule } from './gamechan-core/gamechan-core.module';
 
 
 @NgModule({
