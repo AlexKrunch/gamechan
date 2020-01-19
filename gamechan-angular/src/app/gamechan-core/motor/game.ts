@@ -2,7 +2,8 @@
 
 import {
     Engine, Scene, FreeCamera, Vector3, Mesh,
-    StandardMaterial, Texture, HemisphericLight
+    StandardMaterial, Texture, HemisphericLight,
+    Color4,
 } from 'babylonjs'
 
 import {GameUtils} from './game-utils'
@@ -62,6 +63,9 @@ export class Game {
         camera.inertia = this.inertia;
         camera.angularSensibility =this.angularSensibility;
 
+        //Add sky
+        this.scene.clearColor = new Color4(132/255,197/255,232/255, 1);
+
         //Add ground
         let ground: Mesh;
         ground = Mesh.CreateGround("ground", 1000, 1000, 2, this.scene);
@@ -72,6 +76,8 @@ export class Game {
         let texture = new Texture("./assets/textures/volcanic_text.jpg", this.scene);
         mat.diffuseTexture = texture;
         ground.material = mat;
+
+
 
         // Hemispheric light to enlight the scene
         let hLight = new HemisphericLight("hemi", new Vector3(0, 0.5, 0), this.scene);
