@@ -1,12 +1,9 @@
 <div id='gameToolbar'>
 <div>
-  property: <input type="text"/>
+  property: <input [(ngModel)]="toolCurrent.property" (ngModelChange)="toolPropertyChanged($event)" type="text"/>
 </div>
 
-<select>
-  <option value="block_add">🧱 Block add</option>
-  <option value="texture_add">🖌️ Brush (texture cooring)</option>
-  <option value="item_drop">📦 Furniture add</option>
-  <option value="delete">🔨 Delete</option>
+<select  [(ngModel)]="toolCurrent"  (ngModelChange)="toolChanged($event)">
+  <option *ngFor="let tool of listTool" [ngValue]="tool">{{tool.desc}}</option>
 </select>
 </div>
