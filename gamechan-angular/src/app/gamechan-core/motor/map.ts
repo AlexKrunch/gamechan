@@ -3,13 +3,13 @@ import { Scene, StandardMaterial, Mesh, MeshBuilder, Texture, Vector3 } from "ba
 export class Map {
 
     static readonly EDITION_MODE = {
-        NONE: 'none',
         BLOCK_ADD: 'block_add',
         TEXTURE_ADD: 'texture_add',
         ITEM_DROP: 'item_drop',
+        DELETE: 'delete',
     }
     
-    private currentMode = Map.EDITION_MODE.NONE;
+    private currentMode = Map.EDITION_MODE.BLOCK_ADD;
 
     get mode(){
         return this.currentMode;
