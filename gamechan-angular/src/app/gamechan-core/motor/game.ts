@@ -2,10 +2,11 @@
 
 import {
     Engine, Scene, FreeCamera, Vector3, Mesh,
-    StandardMaterial, Texture,
+    StandardMaterial, Texture, HemisphericLight
 } from 'babylonjs'
 
 import {GameUtils} from './game-utils'
+import {Map} from './map'
 
 export class Game {
 
@@ -37,14 +38,16 @@ export class Game {
 
 
     public initScene(){
-        
+
         if( this.scene != null)  this.scene.dispose();
         // We need a scene to create all our geometry and babylonjs items in
         this.scene = new Scene(this.engine);
         this.scene.audioEnabled = false;
 
+        let map : Map = new Map(this.scene);
+
         //Camera FPS
-        let camera = new FreeCamera('freeCamera', new Vector3(0, 5,-10), this.scene);
+        let camera = new FreeCamera('freeCamera', new Vector3(map.getPlayerPosition().x, 5, map.getPlayerPosition().z), this.scene);
         camera.attachControl(this.canvas);
         this.scene.gravity = new Vector3(0, -0.7, 0);
         camera.applyGravity = true;
@@ -69,6 +72,10 @@ export class Game {
         let texture = new Texture("./assets/textures/volcanic_text.jpg", this.scene);
         mat.diffuseTexture = texture;
         ground.material = mat;
+
+        // Hemispheric light to enlight the scene
+        let hLight = new HemisphericLight("hemi", new Vector3(0, 0.5, 0), this.scene);
+        hLight.intensity = 0.85;
 
         //Launch teh run
         this.run();
