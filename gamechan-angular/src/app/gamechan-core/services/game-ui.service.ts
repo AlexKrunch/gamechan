@@ -10,10 +10,8 @@ export class GameUiService {
 
   public static get STATE_GAME_RUNNING():number { return 0; }
   public static get STATE_GAME_OTHER():number { return 1; }
-
   public static get STATE_EDITOR_TOOL_SELECT():number { return 0; }
   public static get STATE_EDITOR_TOOL_ADD():number { return 1; }
-
 
   private gameState : number =  GameUiService.STATE_GAME_RUNNING;
   private editorTool : number =  GameUiService.STATE_EDITOR_TOOL_ADD;

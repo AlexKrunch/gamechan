@@ -1,23 +1,19 @@
 import { Scene, StandardMaterial, Mesh, MeshBuilder, Texture, Vector3 } from "babylonjs";
+import { GameUiService } from '../services/game-ui.service';
+import ToolModel from "../models/tool.model";
 
-export class Map {
+export class Map{
 
-    static readonly EDITION_MODE = {
-        NONE: 'none',
+    public static EDITION_MODE = {
+        SELECT: 'select',
         BLOCK_ADD: 'block_add',
         TEXTURE_ADD: 'texture_add',
         ITEM_DROP: 'item_drop',
+        DELETE: 'delete',
     }
     
-    private currentMode = Map.EDITION_MODE.NONE;
-
-    get mode(){
-        return this.currentMode;
-    }
-
-    set mode(mode_){
-        this.currentMode = mode_;
-    }
+    private currentTool = new ToolModel(Map.EDITION_MODE.SELECT, null, null) ;
+    private gameUIService : GameUiService;
 
     private scene: Scene;
     private mapData: number[];
@@ -28,8 +24,15 @@ export class Map {
     private ghostMesh: Mesh; //mesh to display to impact point
 
 
-    constructor(scene_){
+    constructor(scene_, service_: GameUiService){
         this.scene = scene_;
+
+        this.gameUIService = service_;
+        this.gameUIService.changeEditorToolEmitter.subscribe(interaction_ => {
+            this.currentTool = interaction_.value;
+            console.log( this.currentTool );
+        });
+
         this.mapData = [
             1,1,1,1,1,1,
             1,0,0,0,0,1,
@@ -70,21 +73,27 @@ export class Map {
 
         this.scene.onPointerUp = (evt, pickResult) => {
             if(pickResult.hit){
-                 console.log("Make block");
-                 if(pickResult.pickedMesh.name.indexOf('ground')>-1){
 
-                    this.makeBlock(this.ghostMesh.position.x, this.ghostMesh.position.z,'./assets/textures/concrete_text.jpg');
+                console.log(this.currentTool.type);
+                if(pickResult.pickedMesh.name.indexOf('ground')>-1){
 
+                    if(this.currentTool.type === Map.EDITION_MODE.BLOCK_ADD){
+                        this.makeBlock(this.ghostMesh.position.x, this.ghostMesh.position.z,'./assets/textures/concrete_text.jpg');
+                    }
+                   
                  } else if(pickResult.pickedMesh.name.indexOf('wall')>-1){
-                    let mesh = pickResult.pickedMesh;
 
-                    let mat = new StandardMaterial("matGround", this.scene);
-                    //let textureBox = new Texture('https://pbs.twimg.com/media/EOoDty5XkAANDcZ?format=jpg&name=small', this.scene);
-                    //https://66.media.tumblr.com/3df4af53fc817dd4e19c86d97209b8a4/tumblr_o36fyc6raW1sw7bx5o1_540.jpg
-                    let textureBox = new Texture('https://pbs.twimg.com/media/EOpI7_3WsAA1hkU?format=jpg&name=360x360', this.scene);
-                    mat.diffuseTexture = textureBox;
-                    mat.diffuseTexture.scale(1/4) ;
-                    mesh.material = mat;
+                    if(this.currentTool.type === Map.EDITION_MODE.TEXTURE_ADD){
+                        let mesh = pickResult.pickedMesh;
+                        let mat = new StandardMaterial("matGround", this.scene);
+                        //let textureBox = new Texture('https://pbs.twimg.com/media/EOoDty5XkAANDcZ?format=jpg&name=small', this.scene);
+                        //https://66.media.tumblr.com/3df4af53fc817dd4e19c86d97209b8a4/tumblr_o36fyc6raW1sw7bx5o1_540.jpg
+                        //let textureBox = new Texture('https://pbs.twimg.com/media/EOpI7_3WsAA1hkU?format=jpg&name=360x360', this.scene);
+                        let textureBox =  new Texture(this.currentTool.property, this.scene);
+                        mat.diffuseTexture = textureBox;
+                        mat.diffuseTexture.scale(1/4) ;
+                        mesh.material = mat;
+                    }
                  }
             }
          };

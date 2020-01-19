@@ -1,4 +1,17 @@
+#container{
+    /*position: relative;*/
+}
+
+#renderCanvas,
+#toolBar {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 #renderCanvas{
-    width: 100%;
-    height: 100%;
+    width:100%;
+}
+#toolBar {
+  z-index: 10;
 }

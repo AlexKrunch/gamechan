@@ -1,4 +1,4 @@
-export  default class InteractionModel {
+export default class InteractionModel {
 
  public description: string;
  public value: any;
@@ -6,5 +6,6 @@ export  default class InteractionModel {
 
  public static get TYPE_NONE():number { return 0; }
  public static get TYPE_MESH():number { return 1; }
+ public static get TYPE_TOOL():number { return 2; }
  
 }
