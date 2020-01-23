@@ -1,4 +1,4 @@
-import { Scene, StandardMaterial, Mesh, MeshBuilder, Texture, Vector3 } from "babylonjs";
+import { Scene, StandardMaterial, Mesh, MeshBuilder, Texture, Vector3, Color3 } from "babylonjs";
 import { GameUiService } from '../services/game-ui.service';
 import ToolModel from "../models/tool.model";
 
@@ -21,7 +21,8 @@ export class Map{
     private mapHeight: number = 7;
     private blockSize: number = 8;
 
-    private ghostMesh: Mesh; //mesh to display to impact point
+    private ghostMeshPainting: Mesh; //mesh to display to impact point
+    private ghostMeshBuilding: Mesh;
 
 
     constructor(scene_, service_: GameUiService){
@@ -30,7 +31,17 @@ export class Map{
         this.gameUIService = service_;
         this.gameUIService.changeEditorToolEmitter.subscribe(interaction_ => {
             this.currentTool = interaction_.value;
-            console.log( this.currentTool );
+            
+           if(this.currentTool.type === Map.EDITION_MODE.BLOCK_ADD){
+              this.ghostMeshBuilding.isVisible = true;
+              this.ghostMeshPainting.isVisible = false;
+           } else if(this.currentTool.type === Map.EDITION_MODE.TEXTURE_ADD){
+              this.ghostMeshBuilding.isVisible = false;
+              this.ghostMeshPainting.isVisible = true;
+           } else {
+              this.ghostMeshBuilding.isVisible = false;
+              this.ghostMeshPainting.isVisible = false;
+           }
         });
 
         this.mapData = [
@@ -46,13 +57,22 @@ export class Map{
         //Construct the scene
         this.displayMap();
 
-        //init hte ghost mesh
-        this.ghostMesh = MeshBuilder.CreateBox("ghost_tile", {size: this.blockSize},  this.scene);
-        this.ghostMesh.isPickable = false;
+        //init hte ghost mesh for painting
+        this.ghostMeshPainting = MeshBuilder.CreateBox("ghost_tile", {size: this.blockSize},  this.scene);
+        this.ghostMeshPainting.isPickable = false;
         //Add wireframe texture
-        let matGhost : StandardMaterial = new StandardMaterial("matGround", this.scene);
+        let matGhost : StandardMaterial = new StandardMaterial("matGhost_text", this.scene);
         matGhost.wireframe = true;
-        this.ghostMesh.material = matGhost;
+        matGhost.emissiveColor = Color3.Green();
+        this.ghostMeshPainting.material = matGhost;
+        
+        //Ghost mesh for building
+        this.ghostMeshBuilding = MeshBuilder.CreateBox("ghost_box", {size: this.blockSize},  this.scene);
+        this.ghostMeshBuilding.isPickable = false;
+        //Add wireframe texture
+        let matGhost : StandardMaterial = new StandardMaterial("matGhostBox_text", this.scene);
+        matGhost.emissiveColor = Color3.Green();
+        this.ghostMeshPainting.material = matGhost;
 
         //prepare the pointer
         this.scene.pointerMovePredicate = function(mesh) {
@@ -141,10 +161,17 @@ export class Map{
 
     }
 
-    private moveGhostMesh(pos_ : Vector3){
+    private moveGhostMeshTextBox(pos_ : Vector3){
         pos_.y = pos_.y + (this.blockSize * 0.5);
         pos_.x = Math.round(pos_.x  / this.blockSize)*this.blockSize;
         pos_.z = Math.round(pos_.z  / this.blockSize)*this.blockSize;
-        this.ghostMesh.position = pos_;
+        this.ghostMeshBox.position = pos_;
+    }
+  
+    private moveGhostMeshPainting(pos_ : Vector3){
+        pos_.y = pos_.y + (this.blockSize * 0.5);
+        pos_.x = Math.round(pos_.x  / this.blockSize)*this.blockSize;
+        pos_.z = Math.round(pos_.z  / this.blockSize)*this.blockSize;
+        this.ghostMeshPainting.position = pos_;
     }
 }
