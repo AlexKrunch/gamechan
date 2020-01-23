@@ -1,4 +1,4 @@
-import { Scene, StandardMaterial, Mesh, MeshBuilder, Texture, Vector3, Color3 } from "babylonjs";
+import { Scene, StandardMaterial, Mesh, MeshBuilder, Texture, Vector3, Color3, Color4 } from "babylonjs";
 import { GameUiService } from '../services/game-ui.service';
 import ToolModel from "../models/tool.model";
 
@@ -76,9 +76,9 @@ export class Map{
         this.ghostMeshBuilding = MeshBuilder.CreateBox("ghost_box", {size: this.blockSize},  this.scene);
         this.ghostMeshBuilding.isPickable = false;
         //Add wireframe texture
-        let matGhost : StandardMaterial = new StandardMaterial("matGhostBox_text", this.scene);
-        matGhost.emissiveColor = Color3.Green();
-        this.ghostMeshPainting.material = matGhost;
+        let matGhostBox : StandardMaterial = new StandardMaterial("matGhostBox_text", this.scene);
+        matGhostBox.emissiveColor = new Color4(0,1,0,0.5);
+        this.ghostMeshBuilding.material = matGhostBox;
 
         //prepare the pointer
         this.scene.pointerMovePredicate = function(mesh) {
@@ -99,10 +99,10 @@ export class Map{
                   if(pickResult.pickedMesh.name.indexOf('ground')>-1) this.moveGhostMeshBox(pickResult.pickedPoint);
                } else if (this.currentTool.type === Map.EDITION_MODE.TEXTURE_ADD){
                  //IF texture paint
-                  if(pickResult.pickedMesh.name.indexOf('wall')>-1) this.moveGhostMeshPainting(pickResult.pickedPoint);
+                  if(pickResult.pickedMesh.name.indexOf('wall')>-1) this.moveGhostMeshPainting(pickResult.pickedMesh.position);
                } else if(this.currentTool.type === Map.EDITION_MODE.TEXTURE_ADD){
                  //IF DRAG CANVAS
-                 if(pickResult.pickedMesh.name.indexOf('wall')>-1) this.moveSelectedCanvas(pickResult.pickedPoint);
+                 if(pickResult.pickedMesh.name.indexOf('wall')>-1) this.moveCanvasSelected(pickResult.pickedPoint);
                }
               
            }
@@ -112,7 +112,7 @@ export class Map{
             if(pickResult.hit){
               if(this.currentTool.type === Map.EDITION_MODE.BLOCK_ADD){
                 if(pickResult.pickedMesh.name.indexOf('ground')>-1){
-                  this.makeBlock(this.ghostMesh.position.x, this.ghostMesh.position.z,'./assets/textures/concrete_text.jpg');
+                  this.makeBlock(this.ghostMeshBuilding.position.x, this.ghostMeshBuilding.position.z,'./assets/textures/concrete_text.jpg');
                 }
               } else if(this.currentTool.type === Map.EDITION_MODE.TEXTURE_ADD){
                   if(pickResult.pickedMesh.name.indexOf('wall')>-1){
@@ -188,7 +188,7 @@ export class Map{
     private makeCanvas(x_, y_,z_,text_){
 
         let canvas : Mesh = MeshBuilder.CreatePlane("canvas", {size: this.blockSize*0.8},  this.scene);
-        mesh.isPickable = true;
+        canvas.isPickable = true;
         let mat = new StandardMaterial("matCanvas", this.scene);
         let textureCanvas = new Texture(text_, this.scene);
         mat.diffuseTexture = textureCanvas;
@@ -204,13 +204,13 @@ export class Map{
         pos_.y = pos_.y + (this.blockSize * 0.5);
         pos_.x = Math.round(pos_.x  / this.blockSize)*this.blockSize;
         pos_.z = Math.round(pos_.z  / this.blockSize)*this.blockSize;
-        this.ghostMeshBox.position = pos_;
+        this.ghostMeshBuilding.position = pos_;
     }
   
     private moveGhostMeshPainting(pos_ : Vector3){
-        pos_.y = pos_.y + (this.blockSize * 0.5);
-        pos_.x = Math.round(pos_.x  / this.blockSize)*this.blockSize;
-        pos_.z = Math.round(pos_.z  / this.blockSize)*this.blockSize;
+        pos_.y = pos_.y;
+        pos_.x = pos_.x;
+        pos_.z = pos_.z;
         this.ghostMeshPainting.position = pos_;
     }
   
