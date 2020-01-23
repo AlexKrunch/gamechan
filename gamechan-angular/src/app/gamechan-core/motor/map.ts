@@ -8,6 +8,8 @@ export class Map{
         SELECT: 'select',
         BLOCK_ADD: 'block_add',
         TEXTURE_ADD: 'texture_add',
+        CANVAS_ADD: 'canvas_add',
+        CANVAS_DRAG: 'canvas_drag',
         ITEM_DROP: 'item_drop',
         DELETE: 'delete',
     }
@@ -23,6 +25,8 @@ export class Map{
 
     private ghostMeshPainting: Mesh; //mesh to display to impact point
     private ghostMeshBuilding: Mesh;
+  
+    private canvasSelected: Mesh;
 
 
     constructor(scene_, service_: GameUiService){
@@ -30,7 +34,9 @@ export class Map{
 
         this.gameUIService = service_;
         this.gameUIService.changeEditorToolEmitter.subscribe(interaction_ => {
+          
             this.currentTool = interaction_.value;
+            this.canvasSelected = null;
             
            if(this.currentTool.type === Map.EDITION_MODE.BLOCK_ADD){
               this.ghostMeshBuilding.isVisible = true;
@@ -87,13 +93,23 @@ export class Map{
         //When pointer down event is raised
         this.scene.onPointerMove = (evt, pickResult) => {
            if(pickResult.hit){
-                if(pickResult.pickedMesh.name.indexOf('ground')>-1) this.moveGhostMesh(pickResult.pickedPoint);
+              
+               if(this.currentTool.type === Map.EDITION_MODE.BLOCK_ADD){
+                  //IF BUILD block
+                  if(pickResult.pickedMesh.name.indexOf('ground')>-1) this.moveGhostMeshBox(pickResult.pickedPoint);
+               } else if (this.currentTool.type === Map.EDITION_MODE.TEXTURE_ADD){
+                 //IF texture paint
+                  if(pickResult.pickedMesh.name.indexOf('wall')>-1) this.moveGhostMeshPainting(pickResult.pickedPoint);
+               } else if(this.currentTool.type === Map.EDITION_MODE.TEXTURE_ADD){
+                 //IF DRAG CANVAS
+                 if(pickResult.pickedMesh.name.indexOf('wall')>-1) this.moveSelectedCanvas(pickResult.pickedPoint);
+               }
+              
            }
         };
 
         this.scene.onPointerUp = (evt, pickResult) => {
             if(pickResult.hit){
-                
               if(this.currentTool.type === Map.EDITION_MODE.BLOCK_ADD){
                 if(pickResult.pickedMesh.name.indexOf('ground')>-1){
                   this.makeBlock(this.ghostMesh.position.x, this.ghostMesh.position.z,'./assets/textures/concrete_text.jpg');
@@ -110,6 +126,14 @@ export class Map{
                       mat.diffuseTexture.scale(1/4) ;
                       mesh.material = mat;
                   }
+              } else if(this.currentTool.type === Map.EDITION_MODE.CANVAS_ADD){
+                  if(pickResult.pickedMesh.name.indexOf('wall')>-1){
+                    this.canvasSelected = this.makeCanvas(pickResult.pickedPoint.x, pickResult.pickedPoint.y, pickResult.pickedPoint.z, "https://pbs.twimg.com/media/EOklPtoX4AAkQ_z?format=jpg&name=small");
+                    this.currentTool.type = Map.EDITION_MODE.CANVAS_DRAG;
+                  }
+              } else if(this.currentTool.type === Map.EDITION_MODE.CANVAS_DRAG){
+                 this.canvasSelected = null;
+                 this.currentTool.type = Map.EDITION_MODE.SELECT;
               }
               
             }
@@ -146,8 +170,8 @@ export class Map{
 
     private makeBlock(x_,z_,text_){
 
-        let mesh : Mesh = MeshBuilder.CreateBox("wall_tile", {size: this.blockSize},  this.scene);
-        //mesh.checkCollisions = true;
+        let mesh : Mesh = MeshBuilder.CreateBox("wall_block", {size: this.blockSize},  this.scene);
+        mesh.checkCollisions = true;
         mesh.isPickable = true;
         let mat = new StandardMaterial("matGround", this.scene);
         let textureBox = new Texture(text_, this.scene);
@@ -161,7 +185,22 @@ export class Map{
 
     }
 
-    private moveGhostMeshTextBox(pos_ : Vector3){
+    private makeCanvas(x_, y_,z_,text_){
+
+        let canvas : Mesh = MeshBuilder.CreatePlane("canvas", {size: this.blockSize*0.8},  this.scene);
+        mesh.isPickable = true;
+        let mat = new StandardMaterial("matCanvas", this.scene);
+        let textureCanvas = new Texture(text_, this.scene);
+        mat.diffuseTexture = textureCanvas;
+        canvas.material = mat;
+        canvas.position.x = x_;
+        canvas.position.y = y_;
+        canvas.position.z = z_;
+        
+        return canvas;
+    }
+
+    private moveGhostMeshBox(pos_ : Vector3){
         pos_.y = pos_.y + (this.blockSize * 0.5);
         pos_.x = Math.round(pos_.x  / this.blockSize)*this.blockSize;
         pos_.z = Math.round(pos_.z  / this.blockSize)*this.blockSize;
@@ -173,5 +212,13 @@ export class Map{
         pos_.x = Math.round(pos_.x  / this.blockSize)*this.blockSize;
         pos_.z = Math.round(pos_.z  / this.blockSize)*this.blockSize;
         this.ghostMeshPainting.position = pos_;
+    }
+  
+  private moveCanvasSelected(pos_ : Vector3){
+        if( !this.canvasSelected ) return;
+        pos_.y = pos_.y + (this.blockSize * 0.5);
+        pos_.x = Math.round(pos_.x  / this.blockSize)*this.blockSize;
+        pos_.z = Math.round(pos_.z  / this.blockSize)*this.blockSize;
+        this.canvasSelected.position = pos_;
     }
 }
