@@ -16,6 +16,10 @@ export class GameToolbarComponent implements OnInit {
   constructor(private gameUiService : GameUiService) { }
 
   ngOnInit() {
+    
+    this.gameUiService.changeEditorToolEmitter.subscribe(interaction_ => {
+      this.toolCurrent = interaction_.value;
+    });
   }
 
   toolChanged(tool_) {
