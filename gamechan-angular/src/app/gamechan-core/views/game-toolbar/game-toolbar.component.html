@@ -1,6 +1,10 @@
 <div id='gameToolbar'>
 <div>
   property: <input [(ngModel)]="toolCurrent.property" (ngModelChange)="toolPropertyChanged($event)" type="text"/>
+  Post file on wall <input type="file"
+           id="file"
+           (change)="toolFileUpload($event.target.files)">
+  
 </div>
 
 <select  [(ngModel)]="toolCurrent"  (ngModelChange)="toolChanged($event)">
