@@ -15,6 +15,16 @@ export class Map{
     }
     
     private currentTool = new ToolModel(Map.EDITION_MODE.SELECT, null, null) ;
+    set tool(tool_){
+      this.currentTool = new ToolModel(tool_,null,null);
+      let inter: InteractionModel = new InteractionModel();
+      inter.type =  InteractionModel.TYPE_TOOL;
+      inter.value =  this.currentTool;
+      this.gameUiService.changeTool( inter );
+    }
+  
+  
+  
     private gameUIService : GameUiService;
 
     private scene: Scene;
@@ -48,6 +58,11 @@ export class Map{
               this.ghostMeshBuilding.isVisible = false;
               this.ghostMeshPainting.isVisible = false;
            }
+          
+          if(this.currentTool.type === Map.CANVAS_ADD){
+            this.makeCanvas(Vector3.Zero.x, Vector3.Zero.y, Vector3.Zero.z,null, this.currentTool.property);
+            this.mode = Map.EDITION_MODE.CANVAS_DRAG;
+          }
         });
 
         this.mapData = [
@@ -127,14 +142,16 @@ export class Map{
                       mat.diffuseTexture.scale(1/4) ;
                       mesh.material = mat;
                   }
-              } else if(this.currentTool.type === Map.EDITION_MODE.CANVAS_ADD){
+             /*
+             //NO NEED TO FOR it, to suppress
+             } else if(this.currentTool.type === Map.EDITION_MODE.CANVAS_ADD){
                   if(pickResult.pickedMesh.name.indexOf('wall')>-1){
                     this.canvasSelected = this.makeCanvas(pickResult.pickedPoint.x, pickResult.pickedPoint.y, pickResult.pickedPoint.z, "https://pbs.twimg.com/media/EOklPtoX4AAkQ_z?format=jpg&name=small");
                     this.currentTool.type = Map.EDITION_MODE.CANVAS_DRAG;
-                  }
+                  }*/
               } else if(this.currentTool.type === Map.EDITION_MODE.CANVAS_DRAG){
                  this.canvasSelected = null;
-                 this.currentTool.type = Map.EDITION_MODE.SELECT;
+                 this.mode = Map.EDITION_MODE.SELECT;
               }
               
             }
@@ -170,28 +187,49 @@ export class Map{
     }
 
     private makeBlock(x_,z_,text_){
+      
+        let mat = new BABYLON.StandardMaterial("", this.scene);
+	      mat.diffuseTexture = new BABYLON.Texture("https://i.imgur.com/4cHDPDV.jpg", this.scene);
+        let pat = BABYLON.Mesh.FLIP_N_ROTATE_ROW;
 
-        let mesh : Mesh = MeshBuilder.CreateBox("wall_block", {size: this.blockSize},  this.scene);
+        let columns = 6;  // 6 columns
+        let rows = 1;  // 4 rows
+
+        let faceUV = new Array(6);
+
+        for (var i = 0; i < 6; i++) {
+            faceUV[i] = new BABYLON.Vector4(i / columns, 0, (i + 1) / columns, 1 / rows);
+        }
+	
+        //Good example here
+        //https://www.babylonjs-playground.com/#Z5JFSM#3
+        let options = {
+          sideOrientation: BABYLON.Mesh.DOUBLESIDE,
+          pattern: pat,
+          faceUV: faceUV,
+          width:  this.blockSize,
+          height:  this.blockSize,
+          depth:  this.blockSize,
+          tileSize: 1,
+          tileWidth:1
+        }
+	
+        let mesh : Mesh = MeshBuilder.CreateTiledBox("tiled_box", {size: this.blockSize},  this.scene);
         mesh.checkCollisions = true;
         mesh.isPickable = true;
-        let mat = new StandardMaterial("matGround", this.scene);
-        let textureBox = new Texture(text_, this.scene);
-        mat.diffuseTexture = textureBox;
-        mat.diffuseTexture.scale(1/4) ;
         mesh.material = mat;
-
         mesh.position.x = x_;
         mesh.position.z = z_;
         mesh.position.y = this.blockSize * 0.5;
 
     }
 
-    private makeCanvas(x_, y_,z_,text_){
+    private makeCanvas(x_, y_,z_,text_,blob_){
 
         let canvas : Mesh = MeshBuilder.CreatePlane("canvas", {size: this.blockSize*0.8},  this.scene);
         canvas.isPickable = true;
         let mat = new StandardMaterial("matCanvas", this.scene);
-        let textureCanvas = new Texture(text_, this.scene);
+        let textureCanvas = new Texture(text_, this.scene, false, false, false,Texture.NEAREST_SAMPLINGMODE, null,null, blob_ );
         mat.diffuseTexture = textureCanvas;
         canvas.material = mat;
         canvas.position.x = x_;
