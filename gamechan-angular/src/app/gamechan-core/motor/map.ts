@@ -1,6 +1,7 @@
-import { Scene, StandardMaterial, Mesh, MeshBuilder, Texture, Vector3, Color3, Color4 } from "babylonjs";
+import { Scene, StandardMaterial, Mesh, TiledBoxBuilder, MeshBuilder, Texture, Vector3, Color3 } from "babylonjs";
 import { GameUiService } from '../services/game-ui.service';
-import ToolModel from "../models/tool.model";
+import ToolModel from '../models/tool.model';
+import InteractionModel from '../models/interaction.model';
 
 export class Map{
 
@@ -15,12 +16,12 @@ export class Map{
     }
     
     private currentTool = new ToolModel(Map.EDITION_MODE.SELECT, null, null) ;
-    set tool(tool_){
-      this.currentTool = new ToolModel(tool_,null,null);
+    set mode(mode_){
+      this.currentTool = new ToolModel(mode_,null,null);
       let inter: InteractionModel = new InteractionModel();
       inter.type =  InteractionModel.TYPE_TOOL;
       inter.value =  this.currentTool;
-      this.gameUiService.changeTool( inter );
+      this.gameUIService.changeTool( inter );
     }
   
   
@@ -59,8 +60,8 @@ export class Map{
               this.ghostMeshPainting.isVisible = false;
            }
           
-          if(this.currentTool.type === Map.CANVAS_ADD){
-            this.makeCanvas(Vector3.Zero.x, Vector3.Zero.y, Vector3.Zero.z,null, this.currentTool.property);
+          if(this.currentTool.type === Map.EDITION_MODE.CANVAS_ADD){
+            this.makeCanvas(Vector3.Zero().x, Vector3.Zero().y, Vector3.Zero().z,null, this.currentTool.property);
             this.mode = Map.EDITION_MODE.CANVAS_DRAG;
           }
         });
@@ -188,9 +189,9 @@ export class Map{
 
     private makeBlock(x_,z_,text_){
       
-        let mat = new BABYLON.StandardMaterial("", this.scene);
-	      mat.diffuseTexture = new BABYLON.Texture("https://i.imgur.com/4cHDPDV.jpg", this.scene);
-        let pat = BABYLON.Mesh.FLIP_N_ROTATE_ROW;
+        let mat = new StandardMaterial("", this.scene);
+	    mat.diffuseTexture = new Texture("https://i.imgur.com/4cHDPDV.jpg", this.scene);
+        let pat = Mesh.FLIP_N_ROTATE_ROW;
 
         let columns = 6;  // 6 columns
         let rows = 1;  // 4 rows
@@ -214,7 +215,7 @@ export class Map{
           tileWidth:1
         }
 	
-        let mesh : Mesh = MeshBuilder.CreateTiledBox("tiled_box", {size: this.blockSize},  this.scene);
+        let mesh : Mesh = TiledBoxBuilder.CreateTiledBox("tiled_box", {size: this.blockSize},  this.scene);
         mesh.checkCollisions = true;
         mesh.isPickable = true;
         mesh.material = mat;
@@ -229,7 +230,7 @@ export class Map{
         let canvas : Mesh = MeshBuilder.CreatePlane("canvas", {size: this.blockSize*0.8},  this.scene);
         canvas.isPickable = true;
         let mat = new StandardMaterial("matCanvas", this.scene);
-        let textureCanvas = new Texture(text_, this.scene, false, false, false,Texture.NEAREST_SAMPLINGMODE, null,null, blob_ );
+        let textureCanvas = new Texture(text_, this.scene, false, false,Texture.NEAREST_SAMPLINGMODE, null,null, blob_ );
         mat.diffuseTexture = textureCanvas;
         canvas.material = mat;
         canvas.position.x = x_;

@@ -33,8 +33,8 @@ export class GameToolbarComponent implements OnInit {
     this.upadetTheTool();
   }
   
-  toolFileUpload(prop_) {
-    this.toolCurrent.property = files.item(0);
+  toolFileUpload(files_) {
+    this.toolCurrent.property = files_.item(0);
     this.upadetTheTool();
   }
 
