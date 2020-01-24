@@ -169,16 +169,35 @@ export class Map{
     }
 
     private makeBlock(x_,z_,text_){
+      
+        let mat = new BABYLON.StandardMaterial("", this.scene);
+	      mat.diffuseTexture = new BABYLON.Texture("https://i.imgur.com/4cHDPDV.jpg", this.scene);
+        let pat = BABYLON.Mesh.FLIP_N_ROTATE_ROW;
 
-        let mesh : Mesh = MeshBuilder.CreateBox("wall_block", {size: this.blockSize},  this.scene);
+        let columns = 6;  // 6 columns
+        let rows = 1;  // 4 rows
+
+        let faceUV = new Array(6);
+
+        for (var i = 0; i < 6; i++) {
+            faceUV[i] = new BABYLON.Vector4(i / columns, 0, (i + 1) / columns, 1 / rows);
+        }
+	
+        let options = {
+          sideOrientation: BABYLON.Mesh.DOUBLESIDE,
+          pattern: pat,
+          faceUV: faceUV,
+          width:  this.blockSize,
+          height:  this.blockSize,
+          depth:  this.blockSize,
+          tileSize: 1,
+          tileWidth:1
+        }
+	
+        let mesh : Mesh = MeshBuilder.CreateTiledBox("tiled_box", {size: this.blockSize},  this.scene);
         mesh.checkCollisions = true;
         mesh.isPickable = true;
-        let mat = new StandardMaterial("matGround", this.scene);
-        let textureBox = new Texture(text_, this.scene);
-        mat.diffuseTexture = textureBox;
-        mat.diffuseTexture.scale(1/4) ;
         mesh.material = mat;
-
         mesh.position.x = x_;
         mesh.position.z = z_;
         mesh.position.y = this.blockSize * 0.5;
