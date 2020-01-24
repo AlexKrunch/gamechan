@@ -12,8 +12,6 @@ export class GameToolbarComponent implements OnInit {
 
   readonly listTool = ToolModel.LIST_TOOLS;
   toolCurrent : ToolModel = this.listTool[0];
-  fileToUpload: File = null;
-
 
   constructor(private gameUiService : GameUiService) { }
 
@@ -32,8 +30,7 @@ export class GameToolbarComponent implements OnInit {
   }
   
   toolFileUpload(prop_) {
-    this.fileToUpload = files.item(0);
-    this.toolCurrent.property = this.fileToUpload;
+    this.toolCurrent.property = files.item(0);
     this.upadetTheTool();
   }
 
