@@ -77,7 +77,8 @@ export class Map{
         this.ghostMeshBuilding.isPickable = false;
         //Add wireframe texture
         let matGhostBox : StandardMaterial = new StandardMaterial("matGhostBox_text", this.scene);
-        matGhostBox.emissiveColor = new Color4(0,1,0,0.5);
+        matGhostBox.emissiveColor = new Color3(0,1,0);
+        matGhostBox.alpha = 0.4;
         this.ghostMeshBuilding.material = matGhostBox;
 
         //prepare the pointer
