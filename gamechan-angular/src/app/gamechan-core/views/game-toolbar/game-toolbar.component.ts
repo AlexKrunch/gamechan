@@ -12,6 +12,7 @@ export class GameToolbarComponent implements OnInit {
 
   readonly listTool = ToolModel.LIST_TOOLS;
   toolCurrent : ToolModel = this.listTool[0];
+  fileToUse : any;
 
   constructor(private gameUiService : GameUiService) { }
 
@@ -34,7 +35,13 @@ export class GameToolbarComponent implements OnInit {
   }
   
   toolFileUpload(files_) {
-    this.toolCurrent.property = files_.item(0);
+    this.fileToUse = files_.item(0);
+    //this.upadetTheTool();
+  }
+
+  onMakeCanvas(e_){
+    this.toolCurrent.type = ToolModel.LIST_TOOLS[2].type;
+    this.toolCurrent.property = this.fileToUse;
     this.upadetTheTool();
   }
 

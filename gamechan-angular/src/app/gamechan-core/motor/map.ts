@@ -47,6 +47,8 @@ export class Map{
         this.gameUIService.changeEditorToolEmitter.subscribe(interaction_ => {
           
             this.currentTool = interaction_.value;
+            console.log(this.currentTool);
+            console.log(Map.EDITION_MODE.CANVAS_ADD);
             this.canvasSelected = null;
             
            if(this.currentTool.type === Map.EDITION_MODE.BLOCK_ADD){
@@ -197,8 +199,6 @@ export class Map{
         let columns = 6;  // 6 columns
         let rows = 4;  // 4 rows
         let faceUV = new Array(6);
-
-        console.log('###### Map block ######')
         for (var i = 0; i < 6; i++) {
 
           let Ubottom_left = i / columns;
@@ -228,7 +228,8 @@ export class Map{
     }
 
     private makeCanvas(x_, y_,z_,text_,blob_){
-
+        console.log('######## MAKE CANVAS ######');
+        console.log(blob_);
         let canvas : Mesh = MeshBuilder.CreatePlane("canvas", {size: this.blockSize*0.8},  this.scene);
         canvas.isPickable = true;
         let mat = new StandardMaterial("matCanvas", this.scene);

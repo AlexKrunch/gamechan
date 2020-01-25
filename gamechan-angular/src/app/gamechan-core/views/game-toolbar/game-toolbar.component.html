@@ -1,9 +1,9 @@
 <div id='gameToolbar'>
 <div>
-  property: <input [(ngModel)]="toolCurrent.property" (ngModelChange)="toolPropertyChanged($event)" type="text"/>
+  property: <input [(ngModel)]="toolCurrent.property" (ngModelChange)="toolPropertyChanged($event)" type="text"/> <br/>
   Post file on wall <input type="file"
            id="file"
-           (change)="toolFileUpload($event.target.files)">
+           (change)="toolFileUpload($event.target.files)"> <button (click)="onMakeCanvas($event)" >Make canvas</button>
   
 </div>
 
