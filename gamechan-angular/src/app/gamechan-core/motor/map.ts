@@ -21,6 +21,7 @@ export class Map{
       let inter: InteractionModel = new InteractionModel();
       inter.type =  InteractionModel.TYPE_TOOL;
       inter.value =  this.currentTool;
+      console.log(inter);
       this.gameUIService.changeTool( inter );
     }
   
@@ -49,7 +50,7 @@ export class Map{
             this.currentTool = interaction_.value;
             console.log(this.currentTool);
             console.log(Map.EDITION_MODE.CANVAS_ADD);
-            this.canvasSelected = null;
+            //this.canvasSelected = null;
             
            if(this.currentTool.type === Map.EDITION_MODE.BLOCK_ADD){
               this.ghostMeshBuilding.isVisible = true;
@@ -63,7 +64,8 @@ export class Map{
            }
           
           if(this.currentTool.type === Map.EDITION_MODE.CANVAS_ADD){
-            this.makeCanvas(Vector3.Zero().x, Vector3.Zero().y, Vector3.Zero().z,null, this.currentTool.property);
+            //this.canvasSelected = this.makeCanvas(Vector3.Zero().x, Vector3.Zero().y, Vector3.Zero().z,'https://66.media.tumblr.com/00d47c03c731d331be47685171d974a2/de62c0774c395559-f8/s540x810/c02caa4fc9aaca381faa21afd9ed4e4d0abdf85b.jpg', null);
+            this.canvasSelected = this.makeCanvas(Vector3.Zero().x, Vector3.Zero().y, Vector3.Zero().z, null, this.currentTool.property);
             this.mode = Map.EDITION_MODE.CANVAS_DRAG;
           }
         });
@@ -112,14 +114,14 @@ export class Map{
         //When pointer down event is raised
         this.scene.onPointerMove = (evt, pickResult) => {
            if(pickResult.hit){
-              
                if(this.currentTool.type === Map.EDITION_MODE.BLOCK_ADD){
                   //IF BUILD block
                   if(pickResult.pickedMesh.name.indexOf('ground')>-1) this.moveGhostMeshBox(pickResult.pickedPoint);
                } else if (this.currentTool.type === Map.EDITION_MODE.TEXTURE_ADD){
                  //IF texture paint
                   if(pickResult.pickedMesh.name.indexOf('wall')>-1) this.moveGhostMeshPainting(pickResult.pickedMesh.position);
-               } else if(this.currentTool.type === Map.EDITION_MODE.TEXTURE_ADD){
+               } else if(this.currentTool.type === Map.EDITION_MODE.CANVAS_DRAG){
+
                  //IF DRAG CANVAS
                  if(pickResult.pickedMesh.name.indexOf('wall')>-1) this.moveCanvasSelected(pickResult.pickedPoint);
                }
@@ -153,8 +155,8 @@ export class Map{
                     this.currentTool.type = Map.EDITION_MODE.CANVAS_DRAG;
                   }*/
               } else if(this.currentTool.type === Map.EDITION_MODE.CANVAS_DRAG){
-                 this.canvasSelected = null;
-                 this.mode = Map.EDITION_MODE.SELECT;
+                //this.canvasSelected = null;
+                //this.mode = Map.EDITION_MODE.SELECT;
               }
               
             }
@@ -217,21 +219,24 @@ export class Map{
           wrap: true,
         }
 	
-        let mesh : Mesh = MeshBuilder.CreateBox("tiled_box", options,  this.scene);
-        mesh.checkCollisions = true;
+        let mesh : Mesh = MeshBuilder.CreateBox("wall_box", options,  this.scene);
+        mesh.checkCollisions = false;
         mesh.isPickable = true;
         mesh.material = mat;
         mesh.position.x = x_;
         mesh.position.z = z_;
         mesh.position.y = this.blockSize * 0.5;
 
+        return mesh;
     }
 
     private makeCanvas(x_, y_,z_,text_,blob_){
         console.log('######## MAKE CANVAS ######');
         console.log(blob_);
         let canvas : Mesh = MeshBuilder.CreatePlane("canvas", {size: this.blockSize*0.8},  this.scene);
-        canvas.isPickable = true;
+        canvas.isPickable = false;
+        canvas.checkCollisions = false;
+        
         let mat = new StandardMaterial("matCanvas", this.scene);
         let textureCanvas = new Texture(text_, this.scene, false, false,Texture.NEAREST_SAMPLINGMODE, null,null, blob_ );
         mat.diffuseTexture = textureCanvas;
@@ -239,7 +244,6 @@ export class Map{
         canvas.position.x = x_;
         canvas.position.y = y_;
         canvas.position.z = z_;
-        
         return canvas;
     }
 
@@ -259,9 +263,10 @@ export class Map{
   
   private moveCanvasSelected(pos_ : Vector3){
         if( !this.canvasSelected ) return;
-        pos_.y = pos_.y + (this.blockSize * 0.5);
-        pos_.x = Math.round(pos_.x  / this.blockSize)*this.blockSize;
-        pos_.z = Math.round(pos_.z  / this.blockSize)*this.blockSize;
+        pos_.y = pos_.y ;
+        pos_.x = pos_.x;
+        pos_.z = pos_.z;
         this.canvasSelected.position = pos_;
+        //console.log(this.canvasSelected.position)
     }
 }

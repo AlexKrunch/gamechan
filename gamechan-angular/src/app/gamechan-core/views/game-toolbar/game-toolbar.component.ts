@@ -13,6 +13,8 @@ export class GameToolbarComponent implements OnInit {
   readonly listTool = ToolModel.LIST_TOOLS;
   toolCurrent : ToolModel = this.listTool[0];
   fileToUse : any;
+  blobImage: any;
+  propertyString: string;
 
   constructor(private gameUiService : GameUiService) { }
 
@@ -36,12 +38,16 @@ export class GameToolbarComponent implements OnInit {
   
   toolFileUpload(files_) {
     this.fileToUse = files_.item(0);
-    //this.upadetTheTool();
+    this.blobImage = URL.createObjectURL(files_[0]);
+    this.upadetTheTool();
   }
 
-  onMakeCanvas(e_){
-    this.toolCurrent.type = ToolModel.LIST_TOOLS[2].type;
-    this.toolCurrent.property = this.fileToUse;
+  changeTool(e_){
+    if(this.toolCurrent.type === ToolModel.LIST_TOOLS[2]){
+      this.toolCurrent.property = this.fileToUse;
+    } else if(this.toolCurrent.type === ToolModel.LIST_TOOLS[4]) {
+      this.toolCurrent.property = this.propertyString;
+    }
     this.upadetTheTool();
   }
 
