@@ -1,4 +1,4 @@
-import { Scene, StandardMaterial, Mesh, TiledBoxBuilder, MeshBuilder, Texture, Vector3, Color3 } from "babylonjs";
+import { Scene, StandardMaterial, Mesh, MeshBuilder, Texture, Vector3, Color3 } from "babylonjs";
 import { GameUiService } from '../services/game-ui.service';
 import ToolModel from '../models/tool.model';
 import InteractionModel from '../models/interaction.model';
@@ -189,33 +189,35 @@ export class Map{
 
     private makeBlock(x_,z_,text_){
       
+      //Doc of UV is here
+      //https://doc.babylonjs.com/how_to/createbox_per_face_textures_and_colors
+
         let mat = new StandardMaterial("", this.scene);
-	    mat.diffuseTexture = new Texture("https://i.imgur.com/4cHDPDV.jpg", this.scene);
-        let pat = Mesh.FLIP_N_ROTATE_ROW;
-
+	      mat.diffuseTexture = new Texture("http://jerome.bousquie.fr/BJS/images/spriteAtlas.png", this.scene);
         let columns = 6;  // 6 columns
-        let rows = 1;  // 4 rows
-
+        let rows = 4;  // 4 rows
         let faceUV = new Array(6);
 
+        console.log('###### Map block ######')
         for (var i = 0; i < 6; i++) {
-            faceUV[i] = new BABYLON.Vector4(i / columns, 0, (i + 1) / columns, 1 / rows);
+
+          let Ubottom_left = i / columns;
+          let Vbottom_left = 0;
+          let Utop_right = (i + 1) / columns;
+          let Vtop_right = 1 / rows;
+
+          //console.log('bottomx'+Ubottom_left+' bottomy'+Vbottom_left+' topx'+Utop_right+' topy'+Vtop_right)
+          faceUV[i] = new BABYLON.Vector4(Ubottom_left, Vbottom_left, Utop_right, Vtop_right);
         }
-	
-        //Good example here
-        //https://www.babylonjs-playground.com/#Z5JFSM#3
         let options = {
-          sideOrientation: BABYLON.Mesh.DOUBLESIDE,
-          pattern: pat,
           faceUV: faceUV,
           width:  this.blockSize,
-          height:  this.blockSize,
+          height: this.blockSize,
           depth:  this.blockSize,
-          tileSize: 1,
-          tileWidth:1
+          wrap: true,
         }
 	
-        let mesh : Mesh = TiledBoxBuilder.CreateTiledBox("tiled_box", {size: this.blockSize},  this.scene);
+        let mesh : Mesh = MeshBuilder.CreateBox("tiled_box", options,  this.scene);
         mesh.checkCollisions = true;
         mesh.isPickable = true;
         mesh.material = mat;
