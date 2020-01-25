@@ -21,7 +21,6 @@ export class Map{
       let inter: InteractionModel = new InteractionModel();
       inter.type =  InteractionModel.TYPE_TOOL;
       inter.value =  this.currentTool;
-      console.log(inter);
       this.gameUIService.changeTool( inter );
     }
   
@@ -65,7 +64,8 @@ export class Map{
           
           if(this.currentTool.type === Map.EDITION_MODE.CANVAS_ADD){
             //this.canvasSelected = this.makeCanvas(Vector3.Zero().x, Vector3.Zero().y, Vector3.Zero().z,'https://66.media.tumblr.com/00d47c03c731d331be47685171d974a2/de62c0774c395559-f8/s540x810/c02caa4fc9aaca381faa21afd9ed4e4d0abdf85b.jpg', null);
-            this.canvasSelected = this.makeCanvas(Vector3.Zero().x, Vector3.Zero().y, Vector3.Zero().z, null, this.currentTool.property);
+            //this.canvasSelected = this.makeCanvas(Vector3.Zero().x, Vector3.Zero().y, Vector3.Zero().z, null, this.currentTool.property);
+            this.canvasSelected = this.makeCanvas(Vector3.Zero().x, Vector3.Zero().y, Vector3.Zero().z, this.currentTool.property, null);
             this.mode = Map.EDITION_MODE.CANVAS_DRAG;
           }
         });
@@ -231,12 +231,10 @@ export class Map{
     }
 
     private makeCanvas(x_, y_,z_,text_,blob_){
-        console.log('######## MAKE CANVAS ######');
-        console.log(blob_);
         let canvas : Mesh = MeshBuilder.CreatePlane("canvas", {size: this.blockSize*0.8},  this.scene);
         canvas.isPickable = false;
         canvas.checkCollisions = false;
-        
+
         let mat = new StandardMaterial("matCanvas", this.scene);
         let textureCanvas = new Texture(text_, this.scene, false, false,Texture.NEAREST_SAMPLINGMODE, null,null, blob_ );
         mat.diffuseTexture = textureCanvas;
