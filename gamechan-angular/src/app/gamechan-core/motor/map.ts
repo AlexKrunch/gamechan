@@ -36,11 +36,13 @@ export class Map{
 
     private ghostMeshPainting: Mesh; //mesh to display to impact point
     private ghostMeshBuilding: Mesh;
-  
     private canvasSelected: Mesh;
+
+    private meshArray:any[] = new Array();
 
 
     constructor(scene_, service_: GameUiService){
+
         this.scene = scene_;
 
         this.gameUIService = service_;
@@ -170,16 +172,16 @@ export class Map{
         let z = 0;
         //Create the walls
         //N
-        for(x = 0; x < this.mapWidth; x++) this.makeBlock(x* this.blockSize,z* this.blockSize,'./assets/textures/concrete_text.jpg');
+        for(x = 0; x < this.mapWidth; x++) this.makeBlock(x* this.blockSize,z* this.blockSize,'./assets/textures/craft_text.png');
 
         z =  this.mapHeight;
-        for(x = 0; x < this.mapWidth; x++) this.makeBlock(x* this.blockSize,z* this.blockSize,'./assets/textures/concrete_text.jpg');
+        for(x = 0; x < this.mapWidth; x++) this.makeBlock(x* this.blockSize,z* this.blockSize,'./assets/textures/craft_text.png');
 
         x = 0;
-        for(z = 0; z < this.mapHeight; z++) this.makeBlock(x* this.blockSize,z* this.blockSize,'./assets/textures/concrete_text.jpg');
+        for(z = 0; z < this.mapHeight; z++) this.makeBlock(x* this.blockSize,z* this.blockSize,'./assets/textures/craft_text.png');
 
         x = this.mapWidth;
-        for(z = 0; z < this.mapHeight; z++) this.makeBlock(x* this.blockSize,z* this.blockSize,'./assets/textures/concrete_text.jpg');
+        for(z = 0; z < this.mapHeight; z++) this.makeBlock(x* this.blockSize,z* this.blockSize,'./assets/textures/craft_text.png');
 
     }
 
@@ -197,9 +199,9 @@ export class Map{
       //https://doc.babylonjs.com/how_to/createbox_per_face_textures_and_colors
 
         let mat = new StandardMaterial("", this.scene);
-	      mat.diffuseTexture = new Texture("http://jerome.bousquie.fr/BJS/images/spriteAtlas.png", this.scene);
-        let columns = 6;  // 6 columns
-        let rows = 4;  // 4 rows
+	      mat.diffuseTexture = new Texture(text_, this.scene);
+        let columns = 24;  // 6 columns
+        let rows = 87;  // 4 rows
         let faceUV = new Array(6);
         for (var i = 0; i < 6; i++) {
 
@@ -218,15 +220,16 @@ export class Map{
           depth:  this.blockSize,
           wrap: true,
         }
+        //https://playground.babylonjs.com/#NLWBJP#8
 	
-        let mesh : Mesh = MeshBuilder.CreateBox("wall_box", options,  this.scene);
+        let mesh : Mesh = MeshBuilder.CreateBox("wall_box_"+this.meshArray.length, options,  this.scene);
         mesh.checkCollisions = false;
         mesh.isPickable = true;
         mesh.material = mat;
         mesh.position.x = x_;
         mesh.position.z = z_;
         mesh.position.y = this.blockSize * 0.5;
-
+        this.meshArray.push(mesh);
         return mesh;
     }
 
