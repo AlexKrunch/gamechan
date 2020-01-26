@@ -16,6 +16,8 @@ export default class ToolModel {
     public static LIST_TOOLS : ToolModel[] = [
         new ToolModel('select', null, '🖱️ Select'),
         new ToolModel('block_add', null, '🧱 Block add'),
+        new ToolModel('canvas_add', null, 'Canvas add'),
+        new ToolModel('canvas_drag', null, 'Canvas drag'),
         new ToolModel('texture_add', 'https://pbs.twimg.com/media/EOpI7_3WsAA1hkU?format=jpg&name=360x360', '🖌️ Brush (texture coloring)'),
         /*new ToolModel(Map.EDITION_MODE.ITEM_DROP, null, '📦 Furniture add'),*/
         new ToolModel('delete', null, '🔨 Delete'),

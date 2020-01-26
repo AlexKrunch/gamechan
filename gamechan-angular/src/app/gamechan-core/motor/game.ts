@@ -77,7 +77,7 @@ export class Game {
         ground.position.y = - 0.1;
     
         let mat = new StandardMaterial("matVolcano", this.scene);
-        let texture = new Texture("./assets/textures/volcanic_text.jpg", this.scene);
+        let texture = new Texture("./assets/textures/volcanic_text.jpg", this.scene, true, true, BABYLON.Texture.NEAREST_NEAREST);
         mat.diffuseTexture = texture;
         ground.material = mat;
 
