@@ -14,6 +14,8 @@ export class Map{
         ITEM_DROP: 'item_drop',
         DELETE: 'delete',
     }
+
+    private BLOCK_TEXTURE = '/assets/textures/craft_text.png'; 
     
     private currentTool = new ToolModel(Map.EDITION_MODE.SELECT, null, null) ;
     set mode(mode_){
@@ -135,7 +137,7 @@ export class Map{
             if(pickResult.hit){
               if(this.currentTool.type === Map.EDITION_MODE.BLOCK_ADD){
                 if(pickResult.pickedMesh.name.indexOf('ground')>-1){
-                  this.makeBlock(this.ghostMeshBuilding.position.x, this.ghostMeshBuilding.position.z,'./assets/textures/concrete_text.jpg');
+                  this.makeBlock(this.ghostMeshBuilding.position.x, this.ghostMeshBuilding.position.z,this.BLOCK_TEXTURE);
                 }
               } else if(this.currentTool.type === Map.EDITION_MODE.TEXTURE_ADD){
                   if(pickResult.pickedMesh.name.indexOf('wall')>-1){
@@ -172,16 +174,16 @@ export class Map{
         let z = 0;
         //Create the walls
         //N
-        for(x = 0; x < this.mapWidth; x++) this.makeBlock(x* this.blockSize,z* this.blockSize,'./assets/textures/craft_text.png');
+        for(x = 0; x < this.mapWidth; x++) this.makeBlock(x* this.blockSize,z* this.blockSize,this.BLOCK_TEXTURE);
 
         z =  this.mapHeight;
-        for(x = 0; x < this.mapWidth; x++) this.makeBlock(x* this.blockSize,z* this.blockSize,'./assets/textures/craft_text.png');
+        for(x = 0; x < this.mapWidth; x++) this.makeBlock(x* this.blockSize,z* this.blockSize,this.BLOCK_TEXTURE);
 
         x = 0;
-        for(z = 0; z < this.mapHeight; z++) this.makeBlock(x* this.blockSize,z* this.blockSize,'./assets/textures/craft_text.png');
+        for(z = 0; z < this.mapHeight; z++) this.makeBlock(x* this.blockSize,z* this.blockSize,this.BLOCK_TEXTURE);
 
         x = this.mapWidth;
-        for(z = 0; z < this.mapHeight; z++) this.makeBlock(x* this.blockSize,z* this.blockSize,'./assets/textures/craft_text.png');
+        for(z = 0; z < this.mapHeight; z++) this.makeBlock(x* this.blockSize,z* this.blockSize,this.BLOCK_TEXTURE);
 
     }
 
@@ -199,7 +201,7 @@ export class Map{
       //https://doc.babylonjs.com/how_to/createbox_per_face_textures_and_colors
 
         let mat = new StandardMaterial("", this.scene);
-	      mat.diffuseTexture = new Texture(text_, this.scene);
+	      mat.diffuseTexture = new Texture(text_, this.scene, true, true, BABYLON.Texture.NEAREST_NEAREST);
         let columns = 24;  // 6 columns
         let rows = 87;  // 4 rows
         let faceUV = new Array(6);
