@@ -206,11 +206,12 @@ export class Map{
         let rows = 87;  // 4 rows
         let faceUV = new Array(6);
         for (var i = 0; i < 6; i++) {
-
+          
+          //Use now the top left sprite.
           let Ubottom_left = i / columns;
-          let Vbottom_left = 0;
+          let Vbottom_left = 1-(1/rows);
           let Utop_right = (i + 1) / columns;
-          let Vtop_right = 1 / rows;
+          let Vtop_right = 1;
 
           //console.log('bottomx'+Ubottom_left+' bottomy'+Vbottom_left+' topx'+Utop_right+' topy'+Vtop_right)
           faceUV[i] = new BABYLON.Vector4(Ubottom_left, Vbottom_left, Utop_right, Vtop_right);
