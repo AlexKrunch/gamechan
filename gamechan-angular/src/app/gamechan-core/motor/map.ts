@@ -265,11 +265,35 @@ export class Map{
         this.ghostMeshPainting.position = pos_;
     }
   
-  private moveCanvasSelected(pos_ : Vector3){
+  private moveCanvasSelected(pos_ : Vector3, block_: Mesh){
         if( !this.canvasSelected ) return;
-        pos_.y = pos_.y ;
+        
+        pos_.y = pos_.y;
         pos_.x = pos_.x;
         pos_.z = pos_.z;
+    
+        //Get the rotation  of the canvas
+        let blockSize: Vector3 = block_.getBoundingInfo().boundingBox.extendSize;
+        let gap = 0.1 //Gap between the canvas and the block;
+       
+        if( pos_.z >= blockSize.z *0.5 + block_.position.z){
+          //N
+           pos_.z += gap * blockSize.z;
+          this.canvasSelected.rotation.y = 0;
+        } else if( pos_.x >= blockSize.z *0.5 + block_.position.x ){
+          //E
+          pos_.x += gap * blockSize.x;
+          this.canvasSelected.rotation.y = 90;
+        }else if( pos_.z <= -blockSize.z *0.5 + block_.position.z){
+           //N
+           pos_.z -= gap * blockSize.z;
+          this.canvasSelected.rotation.y = 180;
+        } else if( pos_.x <= -blockSize.z *0.5 + block_.position.x ){
+          //E
+          pos_.x -= gap * blockSize.x;
+          this.canvasSelected.rotation.y = 270
+        }
+     
         this.canvasSelected.position = pos_;
         //console.log(this.canvasSelected.position)
     }
