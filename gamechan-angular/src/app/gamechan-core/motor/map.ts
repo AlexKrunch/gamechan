@@ -127,7 +127,7 @@ export class Map{
                } else if(this.currentTool.type === Map.EDITION_MODE.CANVAS_DRAG){
 
                  //IF DRAG CANVAS
-                 if(pickResult.pickedMesh.name.indexOf('wall')>-1) this.moveCanvasSelected(pickResult.pickedPoint);
+                 if(pickResult.pickedMesh.name.indexOf('wall')>-1) this.moveCanvasSelected(pickResult.pickedPoint, pickResult.pickedMesh as Mesh);
                }
               
            }
@@ -274,24 +274,33 @@ export class Map{
     
         //Get the rotation  of the canvas
         let blockSize: Vector3 = block_.getBoundingInfo().boundingBox.extendSize;
+        console.log(blockSize);
+        blockSize.x *=2;
+        blockSize.y *=2;
+        blockSize.z *=2;
+        console.log(block_.scaling);
         let gap = 0.1 //Gap between the canvas and the block;
        
         if( pos_.z >= blockSize.z *0.5 + block_.position.z){
           //N
            pos_.z += gap * blockSize.z;
-          this.canvasSelected.rotation.y = 0;
+          this.canvasSelected.rotation.y = 270 *(Math.PI/180);
+          console.log("N")
         } else if( pos_.x >= blockSize.z *0.5 + block_.position.x ){
           //E
           pos_.x += gap * blockSize.x;
-          this.canvasSelected.rotation.y = 90;
+          this.canvasSelected.rotation.y = 0 *(Math.PI/180);
+          console.log("E")
         }else if( pos_.z <= -blockSize.z *0.5 + block_.position.z){
-           //N
-           pos_.z -= gap * blockSize.z;
-          this.canvasSelected.rotation.y = 180;
+          //N
+          pos_.z -= gap * blockSize.z;
+          this.canvasSelected.rotation.y = 90 *(Math.PI/180);
+          console.log("N")
         } else if( pos_.x <= -blockSize.z *0.5 + block_.position.x ){
-          //E
+          //W
           pos_.x -= gap * blockSize.x;
-          this.canvasSelected.rotation.y = 270
+          this.canvasSelected.rotation.y = 180 *(Math.PI/180);
+          console.log("W")
         }
      
         this.canvasSelected.position = pos_;
