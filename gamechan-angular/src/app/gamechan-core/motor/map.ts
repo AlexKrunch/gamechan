@@ -127,7 +127,7 @@ export class Map{
                } else if(this.currentTool.type === Map.EDITION_MODE.CANVAS_DRAG){
 
                  //IF DRAG CANVAS
-                 if(pickResult.pickedMesh.name.indexOf('wall')>-1) this.moveCanvasSelected(pickResult.pickedPoint);
+                 if(pickResult.pickedMesh.name.indexOf('wall')>-1) this.moveCanvasSelected(pickResult.pickedPoint, pickResult.pickedMesh as Mesh);
                }
               
            }
@@ -206,11 +206,12 @@ export class Map{
         let rows = 87;  // 4 rows
         let faceUV = new Array(6);
         for (var i = 0; i < 6; i++) {
-
+          
+          //Use now the top left sprite.
           let Ubottom_left = i / columns;
-          let Vbottom_left = 0;
+          let Vbottom_left = 1-(1/rows);
           let Utop_right = (i + 1) / columns;
-          let Vtop_right = 1 / rows;
+          let Vtop_right = 1;
 
           //console.log('bottomx'+Ubottom_left+' bottomy'+Vbottom_left+' topx'+Utop_right+' topy'+Vtop_right)
           faceUV[i] = new BABYLON.Vector4(Ubottom_left, Vbottom_left, Utop_right, Vtop_right);
@@ -264,11 +265,57 @@ export class Map{
         this.ghostMeshPainting.position = pos_;
     }
   
-  private moveCanvasSelected(pos_ : Vector3){
+  private moveCanvasSelected(pos_ : Vector3, block_: Mesh){
         if( !this.canvasSelected ) return;
-        pos_.y = pos_.y ;
+        
+        pos_.y = pos_.y;
         pos_.x = pos_.x;
         pos_.z = pos_.z;
+    
+        //Get the rotation  of the canvas
+        /*
+        let blockSize: Vector3 = block_.getBoundingInfo().boundingBox.extendSize;
+        //console.log(blockSize);
+        blockSize.x *=2;
+        blockSize.y *=2;
+        blockSize.z *=2;
+        //console.log(block_.scaling); */
+        let wBlock = this.blockSize;
+        let dBlock = this.blockSize;
+        let gap = 0.2 //Gap between the canvas and the block;
+       
+        if( pos_.z >= dBlock *0.49 + block_.position.z
+          && pos_.x > -wBlock *0.5 + block_.position.x
+          && pos_.x < wBlock *0.5 + block_.position.x ){
+          //N
+          pos_.z += gap;
+          this.canvasSelected.rotation.y =  180 *(Math.PI/180);
+          console.log("N")
+        } else if( pos_.x >= wBlock *0.49 + block_.position.x
+          && pos_.z > -dBlock *0.5 + block_.position.z
+          && pos_.z < dBlock *0.5 + block_.position.z ){
+          //E
+          pos_.x += gap;
+          this.canvasSelected.rotation.y =  270 *(Math.PI/180);
+          console.log("E")
+        }else if( pos_.z <= -dBlock *0.49 + block_.position.z
+          && pos_.x > -wBlock *0.5 + block_.position.x
+          && pos_.x < wBlock *0.5 + block_.position.x ){
+          //S
+          pos_.z -= gap;
+          this.canvasSelected.rotation.y = 0;
+          console.log("S")
+        } else if( pos_.x <= -wBlock *0.49 + block_.position.x
+          && pos_.z > -dBlock *0.5 + block_.position.z
+          && pos_.z < dBlock *0.5 + block_.position.z ){
+          //W
+          pos_.x-= gap;
+          this.canvasSelected.rotation.y = 90 *(Math.PI/180);
+          console.log("W")
+        } else {
+          console.log("None")
+        }
+     
         this.canvasSelected.position = pos_;
         //console.log(this.canvasSelected.position)
     }
