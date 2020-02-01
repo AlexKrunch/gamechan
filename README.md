@@ -8,12 +8,14 @@ __Important Note: this repo is an IN PROGRESS project, this mean than the presen
 
 Progress:
 * Block Adding/texturing is working.
-* Canvas file post is also some kind of working.
+* Canvas file post work, with a proper orientation.
+* Block use now a sprite
 
 Todo:
-* Improve image posting (orienting the canvas in a proper way, selecting it and scaling it)
-* For block texturing swaping, not using url but other sprites in the sprite-sheet
-* Work on ergonomy to make the more game usable
+* Orientation properly the texture on the canvas
+* Block/canvas selection
+* Work on ergonomy to make the more game usable (Add a image upload & block texture selection pop-in)
+* Block/canvas deletion
 * Create authentic pixelart decors
 
 ![3DChan last picture](https://pbs.twimg.com/media/EPMm5MCWoAAHtU0?format=jpg&name=small)
