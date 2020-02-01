@@ -273,34 +273,47 @@ export class Map{
         pos_.z = pos_.z;
     
         //Get the rotation  of the canvas
+        /*
         let blockSize: Vector3 = block_.getBoundingInfo().boundingBox.extendSize;
-        console.log(blockSize);
+        //console.log(blockSize);
         blockSize.x *=2;
         blockSize.y *=2;
         blockSize.z *=2;
-        console.log(block_.scaling);
-        let gap = 0.1 //Gap between the canvas and the block;
+        //console.log(block_.scaling); */
+        let wBlock = this.blockSize;
+        let dBlock = this.blockSize;
+        let gap = 0.2 //Gap between the canvas and the block;
        
-        if( pos_.z >= blockSize.z *0.5 + block_.position.z){
+        if( pos_.z >= dBlock *0.49 + block_.position.z
+          && pos_.x > -wBlock *0.5 + block_.position.x
+          && pos_.x < wBlock *0.5 + block_.position.x ){
           //N
-           pos_.z += gap * blockSize.z;
-          this.canvasSelected.rotation.y = 270 *(Math.PI/180);
+          pos_.z += gap;
+          this.canvasSelected.rotation.y =  180 *(Math.PI/180);
           console.log("N")
-        } else if( pos_.x >= blockSize.z *0.5 + block_.position.x ){
+        } else if( pos_.x >= wBlock *0.49 + block_.position.x
+          && pos_.z > -dBlock *0.5 + block_.position.z
+          && pos_.z < dBlock *0.5 + block_.position.z ){
           //E
-          pos_.x += gap * blockSize.x;
-          this.canvasSelected.rotation.y = 0 *(Math.PI/180);
+          pos_.x += gap;
+          this.canvasSelected.rotation.y =  270 *(Math.PI/180);
           console.log("E")
-        }else if( pos_.z <= -blockSize.z *0.5 + block_.position.z){
-          //N
-          pos_.z -= gap * blockSize.z;
-          this.canvasSelected.rotation.y = 90 *(Math.PI/180);
-          console.log("N")
-        } else if( pos_.x <= -blockSize.z *0.5 + block_.position.x ){
+        }else if( pos_.z <= -dBlock *0.49 + block_.position.z
+          && pos_.x > -wBlock *0.5 + block_.position.x
+          && pos_.x < wBlock *0.5 + block_.position.x ){
+          //S
+          pos_.z -= gap;
+          this.canvasSelected.rotation.y = 0;
+          console.log("S")
+        } else if( pos_.x <= -wBlock *0.49 + block_.position.x
+          && pos_.z > -dBlock *0.5 + block_.position.z
+          && pos_.z < dBlock *0.5 + block_.position.z ){
           //W
-          pos_.x -= gap * blockSize.x;
-          this.canvasSelected.rotation.y = 180 *(Math.PI/180);
+          pos_.x-= gap;
+          this.canvasSelected.rotation.y = 90 *(Math.PI/180);
           console.log("W")
+        } else {
+          console.log("None")
         }
      
         this.canvasSelected.position = pos_;
