@@ -248,6 +248,7 @@ export class Map{
         canvas.position.x = x_;
         canvas.position.y = y_;
         canvas.position.z = z_;
+        canvas.rotation.z = 180 *(Math.PI/180);
         return canvas;
     }
 

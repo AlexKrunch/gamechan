@@ -12,7 +12,6 @@ Progress:
 * Block use now a sprite
 
 Todo:
-* Orientation properly the texture on the canvas
 * Block/canvas selection
 * Work on ergonomy to make the more game usable (Add a image upload & block texture selection pop-in)
 * Block/canvas deletion
