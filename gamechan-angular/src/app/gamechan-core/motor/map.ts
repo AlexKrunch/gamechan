@@ -1,4 +1,4 @@
-import { Scene, StandardMaterial, Mesh, MeshBuilder, Texture, Vector3, Color3 } from "babylonjs";
+import { Scene, StandardMaterial, Mesh, MeshBuilder, Texture, Vector3, Color3, Camera, Ray } from "babylonjs";
 import { GameUiService } from '../services/game-ui.service';
 import ToolModel from '../models/tool.model';
 import InteractionModel from '../models/interaction.model';
@@ -32,8 +32,8 @@ export class Map{
 
     private scene: Scene;
     private mapData: number[];
-    private mapWidth: number = 6;
-    private mapHeight: number = 7;
+    private mapWidth: number = 16;
+    private mapHeight: number = 17;
     private blockSize: number = 8;
 
     private ghostMeshPainting: Mesh; //mesh to display to impact point
@@ -48,13 +48,13 @@ export class Map{
         this.scene = scene_;
 
         this.gameUIService = service_;
+        /*
         this.gameUIService.changeEditorToolEmitter.subscribe(interaction_ => {
           
             this.currentTool = interaction_.value;
             console.log(this.currentTool);
             console.log(Map.EDITION_MODE.CANVAS_ADD);
             //this.canvasSelected = null;
-            
            if(this.currentTool.type === Map.EDITION_MODE.BLOCK_ADD){
               this.ghostMeshBuilding.isVisible = true;
               this.ghostMeshPainting.isVisible = false;
@@ -72,17 +72,7 @@ export class Map{
             this.canvasSelected = this.makeCanvas(Vector3.Zero().x, Vector3.Zero().y, Vector3.Zero().z, this.currentTool.property, null);
             this.mode = Map.EDITION_MODE.CANVAS_DRAG;
           }
-        });
-
-        this.mapData = [
-            1,1,1,1,1,1,
-            1,0,0,0,0,1,
-            1,0,1,1,0,1,
-            1,0,0,0,0,1,
-            1,0,2,0,0,1,
-            1,0,0,0,0,1,
-            1,1,1,1,1,1,
-        ];
+        });*/
 
         //Construct the scene
         this.displayMap();
@@ -100,11 +90,15 @@ export class Map{
         this.ghostMeshBuilding = MeshBuilder.CreateBox("ghost_box", {size: this.blockSize},  this.scene);
         this.ghostMeshBuilding.isPickable = false;
         //Add wireframe texture
+        /*
         let matGhostBox : StandardMaterial = new StandardMaterial("matGhostBox_text", this.scene);
         matGhostBox.emissiveColor = new Color3(0,1,0);
         matGhostBox.alpha = 0.4;
-        this.ghostMeshBuilding.material = matGhostBox;
+        this.ghostMeshBuilding.material = matGhostBox;*/
 
+        this.ghostMeshBuilding.material = matGhost;
+
+        /*
         //prepare the pointer
         this.scene.pointerMovePredicate = function(mesh) {
             //Try to class 
@@ -151,20 +145,14 @@ export class Map{
                       mat.diffuseTexture.scale(1/4) ;
                       mesh.material = mat;
                   }
-             /*
-             //NO NEED TO FOR it, to suppress
-             } else if(this.currentTool.type === Map.EDITION_MODE.CANVAS_ADD){
-                  if(pickResult.pickedMesh.name.indexOf('wall')>-1){
-                    this.canvasSelected = this.makeCanvas(pickResult.pickedPoint.x, pickResult.pickedPoint.y, pickResult.pickedPoint.z, "https://pbs.twimg.com/media/EOklPtoX4AAkQ_z?format=jpg&name=small");
-                    this.currentTool.type = Map.EDITION_MODE.CANVAS_DRAG;
-                  }*/
+
               } else if(this.currentTool.type === Map.EDITION_MODE.CANVAS_DRAG){
                 //this.canvasSelected = null;
                 //this.mode = Map.EDITION_MODE.SELECT;
               }
               
             }
-         };
+         };*/
 
     }
 
@@ -187,12 +175,42 @@ export class Map{
 
     }
 
-    getPlayerPosition(){
+    /**
+     * Method to get the first player position (at the middle of the map)
+     */
+    getPlayerStartPosition(){
         let pos: Vector3 = new Vector3();
         pos.x =  this.mapWidth * this.blockSize * 0.5;
         pos.z =  this.mapHeight * this.blockSize * 0.5;
-
         return pos;
+    }
+
+    /**
+     * Get the block in front of you
+     */
+
+    private updateFrontBlockTimer: number = 0;
+    private UPDATE_FRONT_BLOCK: number = 60;
+    public updateFrontBlock(cam_ : Camera){
+
+        this.updateFrontBlockTimer --;
+        if(this.updateFrontBlockTimer > 0) return;
+        let pos : Vector3  = cam_.position;
+        let ray: Vector3 = cam_.getForwardRay().direction;
+        ray = ray.multiply(new Vector3(this.blockSize*2, 0, this.blockSize*2) );
+        let selectPos: Vector3 = pos.add(ray);
+        selectPos.y = 0;
+
+        //update the ghost mesh
+        this.moveGhostMeshBox(selectPos);
+        this.updateFrontBlockTimer = this.UPDATE_FRONT_BLOCK;
+    }
+
+    /**
+     * Get/Select the block you click on
+     */
+    private getClickedBlock(){
+
     }
 
     private makeBlock(x_,z_,text_){
@@ -274,13 +292,6 @@ export class Map{
         pos_.z = pos_.z;
     
         //Get the rotation  of the canvas
-        /*
-        let blockSize: Vector3 = block_.getBoundingInfo().boundingBox.extendSize;
-        //console.log(blockSize);
-        blockSize.x *=2;
-        blockSize.y *=2;
-        blockSize.z *=2;
-        //console.log(block_.scaling); */
         let wBlock = this.blockSize;
         let dBlock = this.blockSize;
         let gap = 0.2 //Gap between the canvas and the block;

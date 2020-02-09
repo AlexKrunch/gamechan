@@ -12,8 +12,8 @@ Progress:
 * Block use now a sprite
 
 Todo:
-* Block/canvas selection
 * Work on ergonomy to make the more game usable (Add a image upload & block texture selection pop-in)
+* Block/canvas selection
 * Block/canvas deletion
 * Create authentic pixelart decors
 
