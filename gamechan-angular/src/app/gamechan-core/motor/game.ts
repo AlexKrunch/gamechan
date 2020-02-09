@@ -15,6 +15,8 @@ export class Game {
     private canvas: HTMLCanvasElement;
     private engine: Engine;
     private scene: Scene;
+    private map : Map;
+    private camera : FreeCamera;
     private gameUtils : GameUtils;
     private gameUIService :GameUiService;
 
@@ -49,23 +51,28 @@ export class Game {
         this.scene = new Scene(this.engine);
         this.scene.audioEnabled = false;
 
-        let map : Map = new Map(this.scene, this.gameUIService);
+        this.map = new Map(this.scene, this.gameUIService);
 
         //Camera FPS
-        let camera = new FreeCamera('freeCamera', new Vector3(map.getPlayerPosition().x, 5, map.getPlayerPosition().z), this.scene);
-        camera.attachControl(this.canvas);
+        this.camera = new FreeCamera('freeCamera', new Vector3(this.map.getPlayerStartPosition().x, 5, this.map.getPlayerStartPosition().z), this.scene);
+        this.camera.attachControl(this.canvas);
         this.scene.gravity = new Vector3(0, -0.7, 0);
-        camera.applyGravity = true;
+        this.camera.applyGravity = true;
 
-        camera.ellipsoid = new Vector3(2.5, this.playerHeight, 2.5);
-        camera.ellipsoidOffset = new Vector3(0, this.playerHeight, 0);
-        camera.checkCollisions = true;
+        this.camera.ellipsoid = new Vector3(2.5, this.playerHeight, 2.5);
+        this.camera.ellipsoidOffset = new Vector3(0, this.playerHeight, 0);
+        this.camera.checkCollisions = true;
             
         GameUtils.setKeyBoardMapping(this);
 
-        camera.speed = this.speed;
-        camera.inertia = this.inertia;
-        camera.angularSensibility =this.angularSensibility;
+        this.camera.speed = this.speed;
+        this.camera.inertia = this.inertia;
+        this.camera.angularSensibility =this.angularSensibility;
+
+        let handleCameraUpdate = evt => {
+            this.map.updateFrontBlock(this.camera)
+        }
+        this.camera.onViewMatrixChangedObservable.add(handleCameraUpdate);
 
         //Add sky
         this.scene.clearColor = new Color4(132/255,197/255,232/255, 1);
